@@ -9,7 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@supabase/auth-ui-react": "^0.4.4",
+    "@supabase/auth-ui-shared": "^0.1.6",
     "@supabase/supabase-js": "^2.33.1",
+    "@supabase/ui": "^0.36.5",
     "@tanstack/react-query": "5.0.0-beta.20",
     "@tanstack/react-query-devtools": "5.0.0-beta.20",
     "@types/node": "20.5.8",

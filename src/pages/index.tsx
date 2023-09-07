@@ -1,3 +1,12 @@
+import { Button } from "@/components/Button";
+import { Google } from "@/features/auth/components/Google";
+
 export default function Home() {
-  return <div className="grid text-red-600">hello</div>;
+  return (
+    <div>
+      <Google />
+      <Google />
+      <Button onClickHandler={() => console.log("clickです")}>click</Button>
+    </div>
+  );
 }
