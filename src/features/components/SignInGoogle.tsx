@@ -1,11 +1,13 @@
-import useAuth from "@/hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 
 function SignInGoogle() {
   const { signInWithGoogle, error } = useAuth();
 
   return (
     <div>
-      <button onClick={signInWithGoogle}>Googleでサインインする</button>
+      <button onClick={signInWithGoogle} type="button">
+        Googleでサインインする
+      </button>
       {error && <p>{error}</p>}
     </div>
   );

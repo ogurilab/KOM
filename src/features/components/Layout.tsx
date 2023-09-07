@@ -1,5 +1,5 @@
+import useAuth from "../hooks/useAuth";
 import LogoutButton from "./LogoutButton";
-import useAuth from "@/hooks/useAuth";
 
 type Props = {
   children: React.ReactNode;

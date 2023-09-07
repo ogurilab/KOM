@@ -1,6 +1,6 @@
 import { Session } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
-import supabase from "@/lib/supabase";
+import supabase from "../lib/supabse";
 
 const useAuth = () => {
   const [session, setSession] = useState<Session | null>(null); // ログイン状態を管理
@@ -8,9 +8,12 @@ const useAuth = () => {
 
   useEffect(() => {
     // ログイン状態の変化を監視
-    const { data: authData } = supabase.auth.onAuthStateChange((_, session) => {
-      setSession(session);
-    });
+    const { data: authData } = supabase.auth.onAuthStateChange(
+      (_, sessions) => {
+        setSession(sessions);
+      }
+    );
+    console.log(authData);
 
     // リスナーの解除
     return () => authData.subscription.unsubscribe();
@@ -19,17 +22,17 @@ const useAuth = () => {
   // Googleでサインイン
   const signInWithGoogle = async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { error: authError } = await supabase.auth.signInWithOAuth({
         provider: "google",
       });
-      if (error) {
-        setError(error.message);
+      if (authError) {
+        setError(authError.message);
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message);
-      } else if (typeof error === "string") {
-        setError(error);
+    } catch (e) {
+      if (e instanceof Error) {
+        setError(e.message);
+      } else if (typeof e === "string") {
+        setError(e);
       } else {
         console.error("Googleとの連携に失敗しました。");
       }
