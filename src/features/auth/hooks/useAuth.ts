@@ -1,6 +1,6 @@
 import { Session } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
-import supabase from "../lib/supabse";
+import supabase from "@/lib/supabse";
 
 const useAuth = () => {
   const [session, setSession] = useState<Session | null>(null); // ログイン状態を管理
