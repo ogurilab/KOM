@@ -1,5 +1,5 @@
-import Layout from "@/features/auth/components/Layout";
 import SignInGoogle from "@/features/auth/components/SignInGoogle";
+import Layout from "@/layouts";
 
 export default function Home() {
   return (

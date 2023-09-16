@@ -9,10 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@supabase/auth-ui-react": "^0.4.4",
-    "@supabase/auth-ui-shared": "^0.1.6",
+    "@headlessui/react": "^1.7.17",
+    "@heroicons/react": "^2.0.18",
     "@supabase/supabase-js": "^2.33.1",
-    "@supabase/ui": "^0.36.5",
     "@tanstack/react-query": "5.0.0-beta.20",
     "@tanstack/react-query-devtools": "5.0.0-beta.20",
     "@types/node": "20.5.8",
@@ -22,6 +21,7 @@
     "axios": "^1.5.0",
     "clsx": "^2.0.0",
     "eslint-config-next": "13.4.19",
+    "jotai": "^2.4.2",
     "next": "13.4.19",
     "postcss": "8.4.29",
     "react": "18.2.0",
