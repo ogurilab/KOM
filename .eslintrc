@@ -72,6 +72,7 @@
     ],
     "import/prefer-default-export": "off",
     "arrow-body-style": "off",
-    "import/no-extraneous-dependencies": "off"
+    "import/no-extraneous-dependencies": "off",
+    "react/require-default-props": "off"
   }
 }

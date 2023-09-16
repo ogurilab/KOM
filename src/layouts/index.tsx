@@ -13,7 +13,8 @@ import {
 import { useAtom, useSetAtom } from "jotai";
 import { Fragment } from "react";
 
-import { navAtom } from "@/context";
+import { navAtom, registerModalAtom } from "@/context";
+import { Register } from "@/features/courses/components/register";
 import { cn } from "@/utils/cn";
 
 const navigation = [
@@ -35,8 +36,9 @@ type Props = {
 };
 
 function Nav() {
+  const setRegisterModal = useSetAtom(registerModalAtom);
   return (
-    <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+    <div className="hidden lg:fixed lg:inset-y-0 lg:z-10 lg:flex lg:w-72 lg:flex-col">
       <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 py-4">
         <div className="flex h-16 shrink-0 items-center">
           {/* <img
@@ -109,6 +111,7 @@ function Nav() {
             </li>
             <li className="-mx-6 mt-auto border-t pt-4">
               <button
+                onClick={() => setRegisterModal(true)}
                 type="button"
                 className="flex w-full justify-center gap-8"
               >
@@ -264,29 +267,32 @@ function Layout({ children }: Props) {
   const setSidebarOpen = useSetAtom(navAtom);
 
   return (
-    <div>
-      <NavInTransition />
-      <Nav />
-      <div className="sticky top-0 z-40 flex items-center gap-x-6 bg-white px-4 py-4 shadow-sm sm:px-6 lg:hidden">
-        <button
-          type="button"
-          className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
-          onClick={() => setSidebarOpen(true)}
-        >
-          <span className="sr-only">Open sidebar</span>
-          <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-        </button>
-        <div className="flex-1 text-sm font-semibold leading-6 text-gray-900">
-          Dashboard
+    <>
+      <div>
+        <NavInTransition />
+        <Nav />
+        <div className="sticky top-0 z-40 flex items-center gap-x-6 bg-white px-4 py-4 shadow-sm sm:px-6 lg:hidden">
+          <button
+            type="button"
+            className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <span className="sr-only">Open sidebar</span>
+            <Bars3Icon className="h-6 w-6" aria-hidden="true" />
+          </button>
+          <div className="flex-1 text-sm font-semibold leading-6 text-gray-900">
+            Dashboard
+          </div>
         </div>
-      </div>
 
-      <main className="lg:pl-72">
-        <div>
-          <div className="px-4 py-10 sm:px-6 lg:px-8 lg:py-6">{children}</div>
-        </div>
-      </main>
-    </div>
+        <main className="lg:pl-72">
+          <div>
+            <div className="px-4 py-10 sm:px-6 lg:px-8 lg:py-6">{children}</div>
+          </div>
+        </main>
+      </div>
+      <Register />
+    </>
   );
 }
 
