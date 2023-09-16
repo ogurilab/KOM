@@ -73,6 +73,8 @@
     "import/prefer-default-export": "off",
     "arrow-body-style": "off",
     "import/no-extraneous-dependencies": "off",
-    "react/require-default-props": "off"
+    "react/require-default-props": "off",
+    "react/function-component-definition": "off",
+    "react/display-name": "off"
   }
 }

@@ -1,62 +1,52 @@
-import { Session } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
+import { useSetAtom } from "jotai";
+import { useEffect } from "react";
+import { showNotificationAtom } from "@/components/notification";
+import { sessionAtom } from "@/context";
 import supabase from "@/lib/supabse";
 
 const useAuth = () => {
-  const [session, setSession] = useState<Session | null>(null); // ログイン状態を管理
-  const [error, setError] = useState(""); // エラー状況を管理
+  const setSession = useSetAtom(sessionAtom);
+  const onNotification = useSetAtom(showNotificationAtom);
 
   useEffect(() => {
-    // ログイン状態の変化を監視
-    const { data: authData } = supabase.auth.onAuthStateChange(
-      (_, sessions) => {
-        setSession(sessions);
-      }
+    const { data: authData } = supabase.auth.onAuthStateChange((_, sessions) =>
+      setSession(sessions)
     );
-    console.log(authData);
 
-    // リスナーの解除
     return () => authData.subscription.unsubscribe();
-  }, []);
+  }, [setSession]);
 
-  // Googleでサインイン
   const signInWithGoogle = async () => {
     try {
-      const { error: authError } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
       });
-      if (authError) {
-        setError(authError.message);
-      }
+
+      if (error) throw error;
+
+      onNotification({
+        type: "success",
+        title: "ログインしました",
+      });
     } catch (e) {
-      if (e instanceof Error) {
-        setError(e.message);
-      } else if (typeof e === "string") {
-        setError(e);
-      } else {
-        console.error("Googleとの連携に失敗しました。");
-      }
+      onNotification({
+        type: "error",
+        message: "追伸環境の良いところで再度お試しください。",
+        title: "ログインできませんでした。",
+      });
     }
   };
 
-  // ログインユーザーのプロフィール取得: Google
-  const profileFromGoogle: {
-    nickName: string;
-    avatarUrl: string;
-  } = {
-    nickName: session?.user?.user_metadata.user_name,
-    avatarUrl: session?.user?.user_metadata.avatar_url,
-  };
-
-  // サインアウト
   const signOut = async () => {
     await supabase.auth.signOut();
+
+    onNotification({
+      type: "success",
+      title: "ログアウトしました",
+    });
   };
 
   return {
-    session,
-    error,
-    profileFromGoogle,
     signInWithGoogle,
     signOut,
   };
