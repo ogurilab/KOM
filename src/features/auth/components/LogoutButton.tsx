@@ -1,7 +1,7 @@
-import useAuth from "../hooks/useAuth";
+import { useGoogle } from "@/features/auth/hooks/useGoogle";
 
 function LogoutButton() {
-  const { signOut } = useAuth();
+  const { signOut } = useGoogle();
   return (
     <button onClick={signOut} type="button">
       ログアウト

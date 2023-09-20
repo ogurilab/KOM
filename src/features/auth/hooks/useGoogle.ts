@@ -1,25 +1,14 @@
 import { useSetAtom } from "jotai";
-import { useEffect } from "react";
 import { showNotificationAtom } from "@/components/notification";
-import { sessionAtom } from "@/context";
 import supabase from "@/lib/supabse";
 
-const useAuth = () => {
-  const setSession = useSetAtom(sessionAtom);
+export function useGoogle() {
   const onNotification = useSetAtom(showNotificationAtom);
-
-  useEffect(() => {
-    const { data: authData } = supabase.auth.onAuthStateChange((_, sessions) =>
-      setSession(sessions)
-    );
-
-    return () => authData.subscription.unsubscribe();
-  }, [setSession]);
-
   const signInWithGoogle = async () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
+        options: { redirectTo: "/" },
       });
 
       if (error) throw error;
@@ -50,6 +39,4 @@ const useAuth = () => {
     signInWithGoogle,
     signOut,
   };
-};
-
-export default useAuth;
+}

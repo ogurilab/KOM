@@ -1,7 +1,7 @@
-import useAuth from "../hooks/useAuth";
+import { useGoogle } from "@/features/auth/hooks/useGoogle";
 
 function SignInGoogle() {
-  const { signInWithGoogle } = useAuth();
+  const { signInWithGoogle } = useGoogle();
 
   return (
     <button onClick={signInWithGoogle} type="button">

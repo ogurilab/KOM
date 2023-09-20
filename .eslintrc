@@ -75,6 +75,7 @@
     "import/no-extraneous-dependencies": "off",
     "react/require-default-props": "off",
     "react/function-component-definition": "off",
-    "react/display-name": "off"
+    "react/display-name": "off",
+    "jsx-a11y/label-has-associated-control": "off"
   }
 }
