@@ -67,7 +67,7 @@ function GoogleButton() {
       aria-label="Googleでログイン"
       type="button"
       onClick={signInWithGoogle}
-      className="flex items-center justify-center gap-3 rounded-full border px-6 py-2 text-white shadow-sm ring-1 ring-gray-200 transition-all hover:bg-gray-100/20 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+      className="flex items-center justify-center gap-3 rounded-full border bg-white/60 px-6 py-2 shadow-sm ring-1 ring-gray-200 transition-all hover:bg-gray-50/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
     >
       <GoogleIcon className="h-6 w-6" />
       <span className="font-medium leading-6 text-gray-900">
