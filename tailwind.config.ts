@@ -11,6 +11,15 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      height: {
+        screen: "100dvh",
+      },
+      minHeight: {
+        screen: "100dvh",
+      },
+      maxHeight: {
+        screen: "100dvh",
+      },
       fontFamily: {
         inter: ["Inter var", "sans-serif"],
         sans: ["Inter var", "sans-serif"],

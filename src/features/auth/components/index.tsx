@@ -1,6 +1,37 @@
 import React from "react";
 import { useGoogle } from "@/features/auth/hooks/useGoogle";
 
+function Pattern() {
+  return (
+    <>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-1/2 -z-10 max-h-screen -translate-y-1/2  transform-gpu overflow-hidden opacity-30 blur-3xl"
+      >
+        <div
+          className="ml-[max(50%,10rem)] aspect-[1313/771] w-[82.0625rem] bg-gradient-to-tr from-[#55ffc3] to-[#8088ff]"
+          style={{
+            clipPath:
+              "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+          }}
+        />
+      </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 flex max-h-screen transform-gpu overflow-hidden pt-32 opacity-25 blur-3xl sm:pt-40 xl:justify-end"
+      >
+        <div
+          className="ml-[-22rem] aspect-[1313/771] w-[82.0625rem] flex-none origin-top-right rotate-[30deg] bg-gradient-to-tr from-[#55ffc3] to-[#8088ff] xl:ml-0 xl:mr-[calc(50%-12rem)]"
+          style={{
+            clipPath:
+              "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+          }}
+        />
+      </div>
+    </>
+  );
+}
+
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
@@ -113,7 +144,8 @@ function AuthForm() {
 
 export function Auth() {
   return (
-    <div className="flex min-h-screen flex-1 flex-col justify-center bg-gray-100 py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+      <Pattern />
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         {/* <Logo /> */}
         <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
@@ -121,26 +153,23 @@ export function Auth() {
         </h2>
       </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
-        <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
-          <AuthForm />
-
-          <div>
-            <div className="relative mt-10">
-              <div
-                className="absolute inset-0 flex items-center"
-                aria-hidden="true"
-              >
-                <div className="w-full border-t border-gray-200" />
-              </div>
-              <div className="relative flex justify-center text-sm font-medium leading-6">
-                <span className="bg-white px-6 text-gray-900">または</span>
-              </div>
+      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <AuthForm />
+        <div>
+          <div className="relative mt-10">
+            <div
+              className="absolute inset-0 flex items-center"
+              aria-hidden="true"
+            >
+              <div className="w-full border-t border-gray-200" />
             </div>
-
-            <div className="mt-6 grid ">
-              <GoogleButton />
+            <div className="relative flex justify-center text-sm font-medium leading-6">
+              <span className="bg-white px-6 text-gray-900">または</span>
             </div>
+          </div>
+
+          <div className="mt-6 grid ">
+            <GoogleButton />
           </div>
         </div>
       </div>
