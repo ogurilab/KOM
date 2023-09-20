@@ -20,7 +20,7 @@ export function useGoogle() {
     } catch (e) {
       onNotification({
         type: "error",
-        message: "追伸環境の良いところで再度お試しください。",
+        message: "通信環境の良いところで再度お試しください。",
         title: "ログインできませんでした。",
       });
     }
