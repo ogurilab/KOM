@@ -65,6 +65,9 @@ dependencies:
   typescript:
     specifier: 5.2.2
     version: 5.2.2
+  valibot:
+    specifier: ^0.17.0
+    version: 0.17.0
 
 devDependencies:
   '@tailwindcss/aspect-ratio':
@@ -2860,6 +2863,10 @@ packages:
 
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
+
+  /valibot@0.17.0:
+    resolution: {integrity: sha512-ykoYfBc4HOH+osdWaFBmeL7yX35bFfKg1WdwHYZhNVuvGIRH5f2gtYT6cnU85XOsOE7R8la5RnVY6yAScWU9qg==}
+    dev: false
 
   /watchpack@2.4.0:
     resolution: {integrity: sha512-Lcvm7MGST/4fup+ifyKi2hjyIAwcdI4HRgtvTpIUxBRhB+RFtUh8XtDOxUfctVCnhVi+QQj49i91OyvzkJl6cg==}
