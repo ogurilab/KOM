@@ -1,4 +1,5 @@
 import React from "react";
+import { useForm } from "@/features/auth/hooks/useForm";
 import { useGoogle } from "@/features/auth/hooks/useGoogle";
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => {
@@ -47,23 +48,7 @@ function GoogleButton() {
 }
 
 function AuthForm() {
-  const [values, setValues] = React.useState({
-    email: "",
-    password: "",
-  });
-
-  const onChangeHandler =
-    (target: keyof typeof values) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setValues((prev) => ({ ...prev, [target]: e.target.value }));
-    };
-
-  // TODO submit
-  // const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-
-  //   e.preventDefault();
-  //   const { email, password } = values;
-  // };
+  const { onChangeHandler, values } = useForm();
 
   return (
     <form className="space-y-6" action="#" method="POST">
