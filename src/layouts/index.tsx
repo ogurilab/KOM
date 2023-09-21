@@ -2,6 +2,7 @@ import { Bars3Icon } from "@heroicons/react/24/outline";
 import { useSetAtom } from "jotai";
 import { Fragment, Suspense } from "react";
 
+import { Pattern } from "@/components/pattern";
 import { navAtom } from "@/context";
 import { Register } from "@/features/courses/components/register";
 import { Nav, NavInTransition } from "@/layouts/nav";
@@ -16,6 +17,7 @@ function Layout({ children }: Props) {
   return (
     <>
       <div>
+        <Pattern />
         <Suspense>
           <NavInTransition />
           <Nav />

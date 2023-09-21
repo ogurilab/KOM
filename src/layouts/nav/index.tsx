@@ -1,39 +1,16 @@
 import { Dialog, Transition } from "@headlessui/react";
-import {
-  CalendarIcon,
-  ChartPieIcon,
-  DocumentDuplicateIcon,
-  FolderIcon,
-  HomeIcon,
-  PlusIcon,
-  UsersIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useAtom, useSetAtom } from "jotai";
 import React, { Fragment, Suspense } from "react";
 import { navAtom, registerModalAtom } from "@/context";
 import { Courses } from "@/features/courses/components/lists";
-import { cn } from "@/utils/cn";
-
-const navigation = [
-  { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
-  { name: "Team", href: "#", icon: UsersIcon, current: false },
-  { name: "Projects", href: "#", icon: FolderIcon, current: false },
-  { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
-  { name: "Documents", href: "#", icon: DocumentDuplicateIcon, current: false },
-  { name: "Reports", href: "#", icon: ChartPieIcon, current: false },
-];
-const teams = [
-  { id: 1, name: "Heroicons", href: "#", initial: "H", current: false },
-  { id: 2, name: "Tailwind Labs", href: "#", initial: "T", current: false },
-  { id: 3, name: "Workcation", href: "#", initial: "W", current: false },
-];
 
 export function Nav() {
   const setRegisterModal = useSetAtom(registerModalAtom);
+
   return (
     <div className="hidden lg:fixed lg:inset-y-0 lg:z-10 lg:flex lg:w-72 lg:flex-col">
-      <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 py-4">
+      <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white/60 px-6 py-4">
         <div className="flex h-16 shrink-0 items-center">
           {/* <img
             className="h-8 w-auto"
@@ -68,6 +45,8 @@ export function Nav() {
 
 export function NavInTransition() {
   const [sidebarOpen, setSidebarOpen] = useAtom(navAtom);
+  const setRegisterModal = useSetAtom(registerModalAtom);
+
   return (
     <Transition.Root show={sidebarOpen} as={Fragment}>
       <Dialog
@@ -130,67 +109,25 @@ export function NavInTransition() {
                     alt="Your Company"
                   /> */}
                 </div>
-                <nav className="flex flex-1 flex-col">
+                <nav className="flex flex-1 flex-col gap-y-8">
+                  <p className="text-gay-900 border-b pb-2 font-semibold">
+                    講義
+                  </p>
                   <ul className="flex flex-1 flex-col gap-y-7">
                     <li>
-                      <ul className="-mx-2 space-y-1">
-                        {navigation.map((item) => (
-                          <li key={item.name}>
-                            <a
-                              href={item.href}
-                              className={cn(
-                                item.current
-                                  ? "bg-gray-50 text-indigo-600"
-                                  : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
-                                "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
-                              )}
-                            >
-                              <item.icon
-                                className={cn(
-                                  item.current
-                                    ? "text-indigo-600"
-                                    : "text-gray-400 group-hover:text-indigo-600",
-                                  "h-6 w-6 shrink-0"
-                                )}
-                                aria-hidden="true"
-                              />
-                              {item.name}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
+                      <Suspense>
+                        <Courses />
+                      </Suspense>
                     </li>
-                    <li>
-                      <div className="text-xs font-semibold leading-6 text-gray-400">
-                        Your teams
-                      </div>
-                      <ul className="-mx-2 mt-2 space-y-1">
-                        {teams.map((team) => (
-                          <li key={team.name}>
-                            <a
-                              href={team.href}
-                              className={cn(
-                                team.current
-                                  ? "bg-gray-50 text-indigo-600"
-                                  : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
-                                "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
-                              )}
-                            >
-                              <span
-                                className={cn(
-                                  team.current
-                                    ? "border-indigo-600 text-indigo-600"
-                                    : "border-gray-200 text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600",
-                                  "flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium"
-                                )}
-                              >
-                                {team.initial}
-                              </span>
-                              <span className="truncate">{team.name}</span>
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
+                    <li className="-mx-6 mt-auto border-t pt-4">
+                      <button
+                        onClick={() => setRegisterModal(true)}
+                        type="button"
+                        className="flex w-full justify-center gap-8"
+                      >
+                        <PlusIcon className="h-6 w-6 text-gray-400 group-hover:text-gray-500" />
+                        <span className="border-b px-2">登録</span>
+                      </button>
                     </li>
                   </ul>
                 </nav>

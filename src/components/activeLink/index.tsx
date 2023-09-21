@@ -1,7 +1,7 @@
-import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
+import { cn } from "@/utils/cn";
 
 type ActiveLinkProps = Omit<React.ComponentProps<typeof Link>, "children"> & {
   href: string;
@@ -23,7 +23,7 @@ export const ActiveLink = ({
 }: ActiveLinkProps) => {
   const router = useRouter();
 
-  const isActive = router.pathname === href;
+  const isActive = router.asPath === href;
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -41,7 +41,7 @@ export const ActiveLink = ({
   return (
     <Link
       {...props}
-      className={clsx(className, isActive ? activeClassName : "")}
+      className={cn(className, isActive ? activeClassName : "")}
       href={href}
     >
       {typeof children === "function" ? children({ isActive }) : children}
