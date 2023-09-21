@@ -48,10 +48,15 @@ function GoogleButton() {
 }
 
 function AuthForm() {
-  const { onChangeHandler, values } = useForm();
+  const { onChangeHandler, values /* onSubmitHandler */ } = useForm();
 
   return (
-    <form className="space-y-6" action="#" method="POST">
+    <form
+      /* onSubmitHandler */
+      className="space-y-6"
+      action="#"
+      method="POST"
+    >
       <div>
         <label
           htmlFor="email"
