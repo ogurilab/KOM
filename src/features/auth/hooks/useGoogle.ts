@@ -12,11 +12,6 @@ export function useGoogle() {
       });
 
       if (error) throw error;
-
-      onNotification({
-        type: "success",
-        title: "ログインしました",
-      });
     } catch (e) {
       onNotification({
         type: "error",
