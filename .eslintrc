@@ -76,6 +76,7 @@
     "react/require-default-props": "off",
     "react/function-component-definition": "off",
     "react/display-name": "off",
-    "jsx-a11y/label-has-associated-control": "off"
+    "jsx-a11y/label-has-associated-control": "off",
+    "camelcase": "off"
   }
 }

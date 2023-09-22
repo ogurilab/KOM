@@ -104,27 +104,27 @@ export interface Database {
           course_id: string;
           created_at: string;
           id: number;
+          profile_id: string;
           type: Database["public"]["Enums"]["message_type"] | null;
           updated_at: string;
-          user_id: string;
         };
         Insert: {
           content: string;
           course_id: string;
           created_at?: string;
           id?: number;
+          profile_id: string;
           type?: Database["public"]["Enums"]["message_type"] | null;
           updated_at?: string;
-          user_id: string;
         };
         Update: {
           content?: string;
           course_id?: string;
           created_at?: string;
           id?: number;
+          profile_id?: string;
           type?: Database["public"]["Enums"]["message_type"] | null;
           updated_at?: string;
-          user_id?: string;
         };
         Relationships: [
           {
@@ -134,9 +134,9 @@ export interface Database {
             referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "messages_user_id_fkey";
-            columns: ["user_id"];
-            referencedRelation: "users";
+            foreignKeyName: "messages_profile_id_fkey";
+            columns: ["profile_id"];
+            referencedRelation: "profiles";
             referencedColumns: ["id"];
           },
         ];
@@ -146,22 +146,31 @@ export interface Database {
           created_at: string;
           id: string;
           role: Database["public"]["Enums"]["user_role"];
+          university_id: number | null;
         };
         Insert: {
           created_at?: string;
           id: string;
           role?: Database["public"]["Enums"]["user_role"];
+          university_id?: number | null;
         };
         Update: {
           created_at?: string;
           id?: string;
           role?: Database["public"]["Enums"]["user_role"];
+          university_id?: number | null;
         };
         Relationships: [
           {
             foreignKeyName: "profiles_id_fkey";
             columns: ["id"];
             referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "profiles_university_id_fkey";
+            columns: ["university_id"];
+            referencedRelation: "universities";
             referencedColumns: ["id"];
           },
         ];
@@ -211,4 +220,10 @@ export type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
 export type Course = Database["public"]["Tables"]["courses"]["Row"];
 
-export type Message = Database["public"]["Tables"]["messages"]["Row"];
+export type Message = Database["public"]["Tables"]["messages"]["Row"] & {
+  profile: {
+    role: Profile["role"];
+  } | null;
+};
+
+export type MessageType = Database["public"]["Enums"]["message_type"];

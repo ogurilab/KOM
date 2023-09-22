@@ -80,6 +80,9 @@ export function AuthProvider() {
   const { push, pathname } = useRouter();
 
   useEffect(() => {
+    if (pathname === "/auth" || pathname === "/profiles/create")
+      return () => {};
+
     const { data } = supabase.auth.onAuthStateChange((event, sessions) => {
       if (!sessions && pathname !== "/auth") push("/auth");
 
