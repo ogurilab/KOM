@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import supabase from "@/lib/supabse";
 
 export function useForm() {
   const [values, setValues] = useState({
@@ -14,17 +15,21 @@ export function useForm() {
 
   /*  //TODO ここの実装をおねがいします */
 
-  // const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const { email, password } = values;
 
-  //   e.preventDefault();
-  //   const { email, password } = values;
+    // (サインアップ最初)
+    supabase.auth.signUp({ email, password });
+    // (サインイン通常)
+    supabase.auth.signInWithPassword({ email, password });
 
-  // supabaseにログインする処理
-  // };
+    // supabaseにログインする処理
+  };
 
   return {
     values,
     onChangeHandler,
-    // onSubmitHandler,
+    onSubmitHandler,
   };
 }
