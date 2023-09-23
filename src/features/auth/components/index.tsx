@@ -51,7 +51,7 @@ function AuthForm() {
   const { onChangeHandler, values, onSubmitHandler } = useForm();
 
   return (
-    <form onSubmitHandler className="space-y-6" action="#" method="POST">
+    <form onSubmit={onSubmitHandler} className="space-y-6">
       <div>
         <label
           htmlFor="email"
