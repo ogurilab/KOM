@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 import { userAtom } from "@/context";
 import supabase from "@/lib/supabse";
@@ -7,20 +7,59 @@ import { Course } from "@/schema/db";
 const getCourses = async (id?: string) => {
   if (!id) throw new Error("User id is required");
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("course_members")
     .select("courses (*)")
     .eq("profile_id", id);
 
+  if (error) throw error;
+
   return data;
 };
+
+const deleteCourse = async ({ id }: { id: string }) => {
+  const { error } = await supabase
+    .from("course_members")
+    .delete()
+    .eq("course_id", id);
+
+  if (error) throw error;
+
+  return id;
+};
+
+export function useDeleteCourse() {
+  const user = useAtomValue(userAtom);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deleteCourse,
+    onSuccess: (data, { id }) => {
+      const prevData = queryClient.getQueryData<
+        {
+          courses: Course;
+        }[]
+      >(["courses", user?.data.id]);
+
+      if (!prevData || !data) return;
+
+      queryClient.setQueryData<
+        {
+          courses: Course;
+        }[]
+      >(
+        ["courses", user?.data.id],
+        prevData.filter((item) => item.courses.id !== id)
+      );
+    },
+  });
+}
 
 export function useCourses() {
   const user = useAtomValue(userAtom);
 
   return useQuery({
-    queryKey: ["courses", user?.id],
-    queryFn: () => getCourses(user?.id),
+    queryKey: ["courses", user?.data.id],
+    queryFn: () => getCourses(user?.data.id),
     staleTime: Infinity,
     gcTime: Infinity,
     select: (data) => {
