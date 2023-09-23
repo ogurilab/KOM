@@ -53,7 +53,6 @@ export interface Database {
           name: string;
           term: string;
           time_slot: number;
-          university_id: number;
           user_id: string;
           year: number;
         };
@@ -66,7 +65,6 @@ export interface Database {
           name: string;
           term: string;
           time_slot: number;
-          university_id: number;
           user_id: string;
           year: number;
         };
@@ -79,17 +77,10 @@ export interface Database {
           name?: string;
           term?: string;
           time_slot?: number;
-          university_id?: number;
           user_id?: string;
           year?: number;
         };
         Relationships: [
-          {
-            foreignKeyName: "courses_university_id_fkey";
-            columns: ["university_id"];
-            referencedRelation: "universities";
-            referencedColumns: ["id"];
-          },
           {
             foreignKeyName: "courses_user_id_fkey";
             columns: ["user_id"];
@@ -146,19 +137,16 @@ export interface Database {
           created_at: string;
           id: string;
           role: Database["public"]["Enums"]["user_role"];
-          university_id: number | null;
         };
         Insert: {
           created_at?: string;
           id: string;
           role?: Database["public"]["Enums"]["user_role"];
-          university_id?: number | null;
         };
         Update: {
           created_at?: string;
           id?: string;
           role?: Database["public"]["Enums"]["user_role"];
-          university_id?: number | null;
         };
         Relationships: [
           {
@@ -167,37 +155,7 @@ export interface Database {
             referencedRelation: "users";
             referencedColumns: ["id"];
           },
-          {
-            foreignKeyName: "profiles_university_id_fkey";
-            columns: ["university_id"];
-            referencedRelation: "universities";
-            referencedColumns: ["id"];
-          },
         ];
-      };
-      universities: {
-        Row: {
-          created_at: string | null;
-          id: number;
-          name: string;
-          registration_code: string;
-          registration_password: string;
-        };
-        Insert: {
-          created_at?: string | null;
-          id?: number;
-          name: string;
-          registration_code: string;
-          registration_password: string;
-        };
-        Update: {
-          created_at?: string | null;
-          id?: number;
-          name?: string;
-          registration_code?: string;
-          registration_password?: string;
-        };
-        Relationships: [];
       };
     };
     Views: {
@@ -227,3 +185,10 @@ export type Message = Database["public"]["Tables"]["messages"]["Row"] & {
 };
 
 export type MessageType = Database["public"]["Enums"]["message_type"];
+
+export type RoleType = Database["public"]["Enums"]["user_role"];
+
+export const Role = {
+  Teacher: "Teacher" as RoleType,
+  Student: "Student" as RoleType,
+};

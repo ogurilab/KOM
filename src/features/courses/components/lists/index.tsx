@@ -4,7 +4,7 @@ import clsx from "clsx";
 import React, { Fragment, useState } from "react";
 import { ActiveLink } from "@/components/activeLink";
 import { Modal } from "@/components/modal";
-import { useCourses } from "@/features/courses/hooks/lists";
+import { useCourses, useDeleteCourse } from "@/features/courses/hooks/lists";
 import { Course as TCourse } from "@/schema/db";
 
 const weekItems = [
@@ -19,9 +19,12 @@ const weekItems = [
 
 function DeleteCourse({ id }: { id: string }) {
   const [isOpen, setIsOpen] = useState(false);
+  const { mutateAsync } = useDeleteCourse();
 
   const onCompleteHandler = () => {
-    console.log("削除", id);
+    mutateAsync({
+      id,
+    });
     setIsOpen(false);
   };
 
@@ -134,15 +137,22 @@ function SplitCourses({
 
 export function Courses() {
   const { data } = useCourses();
+  const hasData = data?.some((courses) => courses.length > 0);
 
   return (
     <ul className="grid gap-y-8">
-      {data?.map((courses, i) => {
-        return courses.length > 0 ? (
-          // eslint-disable-next-line react/no-array-index-key
-          <SplitCourses key={`courses-${i}`} courses={courses} index={i} />
-        ) : null;
-      })}
+      {hasData ? (
+        data?.map((courses, i) => {
+          return courses.length > 0 ? (
+            // eslint-disable-next-line react/no-array-index-key
+            <SplitCourses key={`courses-${i}`} courses={courses} index={i} />
+          ) : null;
+        })
+      ) : (
+        <div className="flex justify-center">
+          <p>コースがありません</p>
+        </div>
+      )}
     </ul>
   );
 }

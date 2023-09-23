@@ -57,8 +57,9 @@ export const showNotificationAtom = atom(
         ...arg,
         isShown: false,
       });
-    }, duration);
-    set(notificationAtom, { ...arg, timer: newTimer, isShown: true });
+    }, duration || 3000);
+
+    set(notificationAtom, { ...arg, timer: newTimer, isShown: true, duration });
   }
 );
 

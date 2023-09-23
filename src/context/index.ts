@@ -8,4 +8,7 @@ export const registerModalAtom = atom(false);
 
 export const sessionAtom = atom<Session | null>(null);
 
-export const userAtom = atom<(User & Profile) | null>(null);
+export const userAtom = atom<{
+  data: User;
+  profile: Omit<Profile, "created_at"> | null;
+} | null>(null);

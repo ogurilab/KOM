@@ -25,8 +25,6 @@ const useEventListener = () => {
     async (session: Session) => {
       const { user } = session;
 
-      if (pathname === "/profiles/create") return;
-
       const data = await queryClient.fetchQuery({
         queryKey: ["profile", user.id],
         queryFn: () => getProfile(user.id),
@@ -35,16 +33,21 @@ const useEventListener = () => {
       });
 
       if (!data) {
+        setUser({
+          data: user,
+          profile: null,
+        });
         push("/profiles/create");
+
         return;
       }
 
       setUser({
-        ...user,
-        ...data,
+        data: user,
+        profile: data,
       });
 
-      if (pathname === "/auth") push("/");
+      if (pathname === "/auth" || pathname === "/profiles/create") push("/");
     },
     [pathname, push, queryClient, setUser]
   );
@@ -80,8 +83,7 @@ export function AuthProvider() {
   const { push, pathname } = useRouter();
 
   useEffect(() => {
-    if (pathname === "/auth" || pathname === "/profiles/create")
-      return () => {};
+    if (pathname === "/auth") return () => {};
 
     const { data } = supabase.auth.onAuthStateChange((event, sessions) => {
       if (!sessions && pathname !== "/auth") push("/auth");
