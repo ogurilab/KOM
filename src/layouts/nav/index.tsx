@@ -1,12 +1,25 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useRouter } from "next/router";
 import React, { Fragment, Suspense } from "react";
-import { navAtom, registerModalAtom } from "@/context";
+import { navAtom, registerModalAtom, userAtom } from "@/context";
 import { Courses } from "@/features/courses/components/lists";
 
 export function Nav() {
   const setRegisterModal = useSetAtom(registerModalAtom);
+  const { push } = useRouter();
+  const user = useAtomValue(userAtom);
+
+  const onClickHandler = () => {
+    if (user?.profile?.role === "Student") {
+      setRegisterModal(true);
+
+      return;
+    }
+
+    push("/courses/create");
+  };
 
   return (
     <div className="hidden lg:fixed lg:inset-y-0 lg:z-10 lg:flex lg:w-72 lg:flex-col">
@@ -28,7 +41,7 @@ export function Nav() {
             </li>
             <li className="-mx-6 mt-auto border-t pt-4">
               <button
-                onClick={() => setRegisterModal(true)}
+                onClick={onClickHandler}
                 type="button"
                 className="flex w-full justify-center gap-8"
               >
@@ -46,6 +59,18 @@ export function Nav() {
 export function NavInTransition() {
   const [sidebarOpen, setSidebarOpen] = useAtom(navAtom);
   const setRegisterModal = useSetAtom(registerModalAtom);
+  const user = useAtomValue(userAtom);
+  const { push } = useRouter();
+
+  const onClickHandler = () => {
+    if (user?.profile?.role === "Student") {
+      setRegisterModal(true);
+
+      return;
+    }
+
+    push("/courses/create");
+  };
 
   return (
     <Transition.Root show={sidebarOpen} as={Fragment}>
@@ -121,7 +146,7 @@ export function NavInTransition() {
                     </li>
                     <li className="-mx-6 mt-auto border-t pt-4">
                       <button
-                        onClick={() => setRegisterModal(true)}
+                        onClick={onClickHandler}
                         type="button"
                         className="flex w-full justify-center gap-8"
                       >

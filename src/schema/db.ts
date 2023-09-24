@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export type Json =
   | string
   | number
@@ -192,3 +194,16 @@ export const Role = {
   Teacher: "Teacher" as RoleType,
   Student: "Student" as RoleType,
 };
+
+export const insertCourseSchema = z.object({
+  class_code: z.string(),
+  class_password: z.string(),
+  day_of_week: z.number(),
+  name: z.string(),
+  term: z.string(),
+  time_slot: z.number(),
+  year: z.number(),
+  user_id: z.string(),
+});
+
+export type InsertCourseSchema = z.infer<typeof insertCourseSchema>;
