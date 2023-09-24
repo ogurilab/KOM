@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import CryptoJS from "crypto-js";
 import { useAtomValue } from "jotai";
 import { userAtom } from "@/context";
 import supabase from "@/lib/supabse";
@@ -17,8 +18,12 @@ async function insertCourseMember({ profile_id, password, class_code }: Args) {
     .eq("class_code", class_code)
     .single();
 
-  if (course?.class_password !== password)
+  const hashedInput = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
+
+  // ハッシュを比較
+  if (course?.class_password !== hashedInput) {
     throw new Error("パスワードまたは、クラスコードが違います。");
+  }
 
   if (cE) throw cE;
 
