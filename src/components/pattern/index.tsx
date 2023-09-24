@@ -3,7 +3,7 @@ export function Pattern() {
     <>
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-1/2 -z-10 max-h-screen -translate-y-1/2  transform-gpu overflow-hidden opacity-30 blur-3xl"
+        className="pointer-events-none fixed inset-x-0 top-1/2 -z-10  -translate-y-1/2  transform-gpu overflow-hidden opacity-30 blur-3xl"
       >
         <div
           className="ml-[max(50%,10rem)] aspect-[1313/771] w-[82.0625rem] bg-gradient-to-tr from-[#0084ff] to-[#fa74ff]"
@@ -15,7 +15,7 @@ export function Pattern() {
       </div>
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 flex max-h-screen transform-gpu overflow-hidden pt-32 opacity-25 blur-3xl sm:pt-40 xl:justify-end"
+        className="pointer-events-none fixed inset-x-0 top-0 -z-10 flex max-h-screen transform-gpu overflow-hidden pt-32 opacity-25 blur-3xl sm:pt-40 xl:justify-end"
       >
         <div
           className="ml-[-22rem] aspect-[1313/771] w-[82.0625rem] flex-none origin-top-right rotate-[30deg] bg-gradient-to-tr from-[#00ddff] to-[#ff74df] xl:ml-0 xl:mr-[calc(50%-12rem)]"

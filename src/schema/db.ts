@@ -188,6 +188,14 @@ export type Message = Database["public"]["Tables"]["messages"]["Row"] & {
 
 export type MessageType = Database["public"]["Enums"]["message_type"];
 
+export const Categories = {
+  Question: "Question" as MessageType,
+  Contact: "Contact" as MessageType,
+  Request: "Request" as MessageType,
+  ChitChat: "ChitChat" as MessageType,
+  Others: "Others" as MessageType,
+};
+
 export type RoleType = Database["public"]["Enums"]["user_role"];
 
 export const Role = {
