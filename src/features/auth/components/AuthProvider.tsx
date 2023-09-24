@@ -25,6 +25,15 @@ const useEventListener = () => {
     async (session: Session) => {
       const { user } = session;
 
+      if (pathname === "/profiles/create") {
+        setUser({
+          data: user,
+          profile: null,
+        });
+
+        return;
+      }
+
       const data = await queryClient.fetchQuery({
         queryKey: ["profile", user.id],
         queryFn: () => getProfile(user.id),
