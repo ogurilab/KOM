@@ -48,7 +48,13 @@ function GoogleButton() {
 }
 
 function AuthForm() {
-  const { onChangeHandler, values, onSubmitHandler } = useForm();
+  const {
+    onChangeHandler,
+    values,
+    onSubmitHandler,
+    isRegister,
+    setIsRegister,
+  } = useForm();
 
   return (
     <form onSubmit={onSubmitHandler} className="space-y-6">
@@ -98,10 +104,10 @@ function AuthForm() {
         <div className="text-sm leading-6">
           <button
             type="button"
-            // TODO: ForgotPassword
+            onClick={() => setIsRegister(!isRegister)}
             className="font-semibold text-blue-600 hover:text-blue-500"
           >
-            パスワードを忘れた場合はこちら
+            {isRegister ? "ログインはこちら" : "新規登録はこちら"}はこちら
           </button>
         </div>
       </div>
@@ -111,7 +117,7 @@ function AuthForm() {
           type="submit"
           className="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
         >
-          ログイン
+          {isRegister ? "新規登録" : "ログイン"}
         </button>
       </div>
     </form>

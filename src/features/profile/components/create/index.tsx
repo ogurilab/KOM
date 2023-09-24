@@ -48,6 +48,7 @@ function SelectRole() {
           id: user.data.id,
         },
       });
+
       push("/");
     } catch (error) {
       onNotification({
