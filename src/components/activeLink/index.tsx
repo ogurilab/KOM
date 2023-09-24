@@ -4,7 +4,6 @@ import React, { useEffect } from "react";
 import { cn } from "@/utils/cn";
 
 type ActiveLinkProps = Omit<React.ComponentProps<typeof Link>, "children"> & {
-  href: string;
   children:
     | (({ isActive }: { isActive: boolean }) => React.ReactNode)
     | React.ReactNode;
@@ -23,7 +22,8 @@ export const ActiveLink = ({
 }: ActiveLinkProps) => {
   const router = useRouter();
 
-  const isActive = router.asPath === href;
+  const isActive =
+    router.asPath === (typeof href === "object" ? href.pathname : href);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function

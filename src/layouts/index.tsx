@@ -9,9 +9,10 @@ import { Nav, NavInTransition } from "@/layouts/nav";
 
 type Props = {
   children: React.ReactNode;
+  title?: string;
 };
 
-function Layout({ children }: Props) {
+function Layout({ children, title }: Props) {
   const setSidebarOpen = useSetAtom(navAtom);
 
   return (
@@ -22,7 +23,7 @@ function Layout({ children }: Props) {
           <NavInTransition />
           <Nav />
         </Suspense>
-        <div className="sticky top-0 z-40 flex items-center gap-x-6 bg-white px-4 py-4 shadow-sm sm:px-6 lg:hidden">
+        <div className="sticky top-0 z-10 flex items-center gap-x-6 bg-white px-4 py-4 shadow-sm sm:px-6 lg:ml-72">
           <button
             type="button"
             className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
@@ -31,8 +32,8 @@ function Layout({ children }: Props) {
             <span className="sr-only">Open sidebar</span>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
-          <div className="flex-1 text-sm font-semibold leading-6 text-gray-900">
-            Dashboard
+          <div className="flex-1 text-sm font-semibold leading-6 text-gray-900 ">
+            {title ?? "SiLec"}
           </div>
         </div>
 

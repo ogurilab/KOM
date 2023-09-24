@@ -2,6 +2,7 @@ import clsx from "clsx";
 import React from "react";
 import { CategoryBadge } from "@/components/categoryBadge";
 import { useMessages } from "@/features/messages/hooks";
+import { useMessageSubscriptions } from "@/features/messages/hooks/subscriptions";
 import { Message as TMessage } from "@/schema/db";
 
 function getIsDifferentDay(targetDate: Date, prevMessageDate?: Date) {
@@ -41,9 +42,7 @@ function Message({ message }: { message: TMessage }) {
     <div
       className={clsx(
         "flex flex-col",
-        message.profile?.role === "Student"
-          ? "items-end pl-20"
-          : "items-start pr-20"
+        message?.role === "Student" ? "items-end pl-20" : "items-start pr-20"
       )}
     >
       {message.type && (
@@ -60,6 +59,7 @@ function Message({ message }: { message: TMessage }) {
 
 export function Messages() {
   const { messages } = useMessages();
+  useMessageSubscriptions();
 
   return (
     <div className="grid gap-y-6">
