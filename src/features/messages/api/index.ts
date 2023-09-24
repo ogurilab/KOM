@@ -11,7 +11,7 @@ type GetMessages = {
 async function getMessages({ slug, created_at }: GetMessages) {
   const { data } = await supabase
     .from("messages")
-    .select("*,profile:profiles(role)")
+    .select("*,profile:profiles(*)")
     .eq("course_id", slug)
     .lte("created_at", created_at)
     .order("created_at", { ascending: false })

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { showNotificationAtom } from "@/components/notification";
 import { userAtom } from "@/context";
 import supabase from "@/lib/supabse";
-import { Categories, Message, MessageType } from "@/schema/db";
+import { Categories, Message, MessageType, RoleType } from "@/schema/db";
 
 type InfiniteMessages = {
   pages: Message[][];
@@ -20,6 +20,7 @@ type Args = {
   profile_id: string;
   type?: MessageType;
   updated_at?: string;
+  role: RoleType;
 };
 
 const insertMessage = async (body: Args) => {
@@ -83,12 +84,15 @@ export function useMessageForm() {
 
     if (!value || !user || typeof query.slug !== "string") return;
 
+    if (!user.profile?.role) return;
+
     try {
       await mutateAsync({
         content: value,
         course_id: query.slug,
         profile_id: user.data.id,
         type: selectCategory,
+        role: user.profile?.role,
       });
 
       setValue("");

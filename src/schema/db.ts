@@ -98,6 +98,7 @@ export interface Database {
           created_at: string;
           id: number;
           profile_id: string;
+          role: Database["public"]["Enums"]["user_role"];
           type: Database["public"]["Enums"]["message_type"] | null;
           updated_at: string;
         };
@@ -107,6 +108,7 @@ export interface Database {
           created_at?: string;
           id?: number;
           profile_id: string;
+          role: Database["public"]["Enums"]["user_role"];
           type?: Database["public"]["Enums"]["message_type"] | null;
           updated_at?: string;
         };
@@ -116,6 +118,7 @@ export interface Database {
           created_at?: string;
           id?: number;
           profile_id?: string;
+          role?: Database["public"]["Enums"]["user_role"];
           type?: Database["public"]["Enums"]["message_type"] | null;
           updated_at?: string;
         };
@@ -164,7 +167,19 @@ export interface Database {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      get_role_by_user_id:
+        | {
+            Args: {
+              user_id: string;
+            };
+            Returns: string;
+          }
+        | {
+            Args: {
+              user_id: string;
+            };
+            Returns: string;
+          };
     };
     Enums: {
       message_type: "Question" | "Contact" | "Request" | "ChitChat" | "Others";
@@ -180,11 +195,7 @@ export type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
 export type Course = Database["public"]["Tables"]["courses"]["Row"];
 
-export type Message = Database["public"]["Tables"]["messages"]["Row"] & {
-  profile: {
-    role: Profile["role"];
-  } | null;
-};
+export type Message = Database["public"]["Tables"]["messages"]["Row"];
 
 export type MessageType = Database["public"]["Enums"]["message_type"];
 
