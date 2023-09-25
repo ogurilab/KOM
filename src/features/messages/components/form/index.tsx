@@ -27,7 +27,7 @@ export function MessageForm() {
   return (
     <form
       onSubmit={onSubmitHandler}
-      className="fixed bottom-0 right-0 z-20 w-full  lg:pl-72"
+      className="fixed bottom-0 right-0 z-10 w-full  lg:pl-72"
     >
       <div className="flex flex-col items-center justify-center border-t bg-white p-4 ">
         <div className="mb-2 flex  w-full justify-between px-2.5">

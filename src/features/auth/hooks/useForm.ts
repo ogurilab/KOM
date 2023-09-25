@@ -31,8 +31,7 @@ export function useForm() {
         onNotification({
           type: "success",
           title: "新規登録が完了しました。",
-          message:
-            "確認メールを送信しましたので、メール内のリンクをクリックしてください。",
+          message: "プロフィールを作成してください。",
           isPersistent: true,
         });
 

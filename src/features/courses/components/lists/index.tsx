@@ -1,6 +1,7 @@
 import { Menu, Transition } from "@headlessui/react";
 import { EllipsisVerticalIcon, TrashIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import { useRouter } from "next/router";
 import React, { Fragment, useState } from "react";
 import { ActiveLink } from "@/components/activeLink";
 import { Modal } from "@/components/modal";
@@ -20,11 +21,14 @@ const weekItems = [
 function DeleteCourse({ id }: { id: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const { mutateAsync } = useDeleteCourse();
+  const { push, pathname } = useRouter();
 
-  const onCompleteHandler = () => {
-    mutateAsync({
+  const onCompleteHandler = async () => {
+    await mutateAsync({
       id,
     });
+
+    if (pathname === `/courses/${id}`) push("/");
     setIsOpen(false);
   };
 
