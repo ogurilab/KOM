@@ -1,4 +1,5 @@
 import { RadioGroup } from "@headlessui/react";
+import { useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import { useAtom, useSetAtom } from "jotai";
 import { useRouter } from "next/router";
@@ -28,6 +29,7 @@ function SelectRole() {
   const onNotification = useSetAtom(showNotificationAtom);
   const [user, setUser] = useAtom(userAtom);
   const { push } = useRouter();
+  const queryClient = useQueryClient();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
@@ -41,12 +43,20 @@ function SelectRole() {
         id: user.data.id,
       });
 
+      await queryClient.invalidateQueries({
+        queryKey: ["profile", user.data.id],
+      });
+
       setUser({
         data: user.data,
         profile: {
           role,
           id: user.data.id,
         },
+      });
+      onNotification({
+        type: "success",
+        title: "プロフィールを作成しました。",
       });
 
       push("/");
