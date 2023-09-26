@@ -7,6 +7,7 @@ import {
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import React, { Fragment } from "react";
+import { Loader } from "@/components/loader";
 import { useCreateCourse } from "@/features/courses/hooks/create";
 import Layout from "@/layouts";
 
@@ -130,6 +131,7 @@ export function CreateCourse() {
     onSubmitHandler,
     code,
     onCopyCode,
+    isPending,
   } = useCreateCourse();
 
   const steps = [
@@ -210,55 +212,57 @@ export function CreateCourse() {
 
   return (
     <Layout>
-      <div className="px-4 sm:px-0">
-        <h3 className="text-base font-semibold leading-7 text-gray-900">
-          講義の作成
-        </h3>
-        <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
-          生徒が登録する講義を作成します。
-        </p>
-      </div>
-      <form onSubmit={onSubmitHandler} className="mt-6">
-        <dl className="divide-y divide-gray-300">
-          {steps.map((step) => (
-            <div
-              key={step.id}
-              className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
-            >
-              <dt className="text-sm font-medium leading-6 text-gray-900">
-                {step.title}
-              </dt>
-              <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                {step.component}
-              </dd>
-            </div>
-          ))}
-        </dl>
-        <button
-          type="submit"
-          className="mx-auto mt-20 flex w-full max-w-xs justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-        >
-          作成
-        </button>
-      </form>
-
-      {code && (
-        <div>
-          <p className="mt-10 text-center text-sm font-semibold leading-6 text-gray-900">
-            以下は講義コードです。生徒はこのコードを入力することで講義に登録できます。
+      <div className="pb-72">
+        <div className="px-4 sm:px-0">
+          <h3 className="text-base font-semibold leading-7 text-gray-900">
+            講義の作成
+          </h3>
+          <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
+            生徒が登録する講義を作成します。
           </p>
-          <button
-            onClick={onCopyCode}
-            type="button"
-            className=" mx-auto mt-6 flex items-center justify-center gap-x-4 rounded-md border border-gray-500 bg-white px-4 py-2 text-center text-sm font-semibold leading-6 text-gray-900 shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-          >
-            <span className="mt-1 text-sm font-semibold leading-6 text-gray-900">
-              {code}
-            </span>
-            <DocumentDuplicateIcon className="h-5 w-5 text-gray-400" />
-          </button>
         </div>
-      )}
+        <form onSubmit={onSubmitHandler} className="mt-6">
+          <dl className="divide-y divide-gray-300">
+            {steps.map((step) => (
+              <div
+                key={step.id}
+                className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
+              >
+                <dt className="text-sm font-medium leading-6 text-gray-900">
+                  {step.title}
+                </dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                  {step.component}
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <button
+            type="submit"
+            className="mx-auto mt-20 flex w-full max-w-xs justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-50"
+            disabled={isPending}
+          >
+            {isPending ? <Loader theme="white" /> : "作成する"}
+          </button>
+        </form>
+        {code && (
+          <div>
+            <p className="mt-10 text-center text-sm font-semibold leading-6 text-gray-900">
+              以下は講義コードです。生徒はこのコードを入力することで講義に登録できます。
+            </p>
+            <button
+              onClick={onCopyCode}
+              type="button"
+              className=" mx-auto mt-6 flex items-center justify-center gap-x-4 rounded-md border border-gray-500 bg-white px-4 py-2 text-center text-sm font-semibold leading-6 text-gray-900 shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+            >
+              <span className="mt-1 text-sm font-semibold leading-6 text-gray-900">
+                {code}
+              </span>
+              <DocumentDuplicateIcon className="h-5 w-5 text-gray-400" />
+            </button>
+          </div>
+        )}
+      </div>
     </Layout>
   );
 }
