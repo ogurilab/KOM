@@ -1,5 +1,9 @@
 import { Menu, Transition } from "@headlessui/react";
-import { EllipsisVerticalIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  DocumentDuplicateIcon,
+  EllipsisVerticalIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import React, { Fragment, useState } from "react";
@@ -18,17 +22,21 @@ const weekItems = [
   "土曜日",
 ];
 
-function DeleteCourse({ id }: { id: string }) {
+function CourseMenu({ id, class_code }: { id: string; class_code: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const { mutateAsync } = useDeleteCourse();
-  const { push, pathname } = useRouter();
+  const { push, query } = useRouter();
+
+  const onCopyHandler = () => {
+    navigator.clipboard.writeText(class_code);
+  };
 
   const onCompleteHandler = async () => {
     await mutateAsync({
       id,
     });
 
-    if (pathname === `/courses/${id}`) push("/");
+    if (query.slug === id) push("/");
     setIsOpen(false);
   };
 
@@ -48,7 +56,7 @@ function DeleteCourse({ id }: { id: string }) {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="absolute right-0 z-10 mt-2 w-24 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+          <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
             <Menu.Item>
               {({ active }) => (
                 <button
@@ -56,7 +64,7 @@ function DeleteCourse({ id }: { id: string }) {
                   onClick={() => setIsOpen(true)}
                   className={clsx(
                     active ? "bg-gray-50" : "",
-                    "flex w-full items-center justify-center px-2 py-1 text-sm leading-6 text-gray-900"
+                    "flex w-full items-center px-2 py-1 text-sm leading-6 text-gray-900"
                   )}
                 >
                   <TrashIcon
@@ -64,6 +72,24 @@ function DeleteCourse({ id }: { id: string }) {
                     aria-hidden="true"
                   />
                   <span className="font-medium">削除</span>
+                </button>
+              )}
+            </Menu.Item>
+            <Menu.Item>
+              {({ active }) => (
+                <button
+                  type="button"
+                  onClick={onCopyHandler}
+                  className={clsx(
+                    active ? "bg-gray-50" : "",
+                    "flex w-full items-center justify-center px-2 py-1 text-sm leading-6 text-gray-900"
+                  )}
+                >
+                  <DocumentDuplicateIcon
+                    className="mr-2 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                    aria-hidden="true"
+                  />
+                  <span className="font-medium">クラスIDをコピー</span>
                 </button>
               )}
             </Menu.Item>
@@ -114,7 +140,7 @@ function Course({ course }: { course: TCourse }) {
           </>
         )}
       </ActiveLink>
-      <DeleteCourse id={course?.id} />
+      <CourseMenu id={course?.id} class_code={course?.class_code} />
     </li>
   );
 }

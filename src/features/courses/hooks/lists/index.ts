@@ -9,7 +9,7 @@ const getCourses = async (id?: string) => {
 
   const { data, error } = await supabase
     .from("course_members")
-    .select("courses (name,id,day_of_week)")
+    .select("courses (name,id,day_of_week,class_code)")
     .eq("profile_id", id);
 
   if (error) throw error;
