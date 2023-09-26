@@ -1,4 +1,5 @@
 import React from "react";
+import { Pattern } from "@/components/pattern";
 import { useForm } from "@/features/auth/hooks/useForm";
 import { useGoogle } from "@/features/auth/hooks/useGoogle";
 
@@ -126,34 +127,37 @@ function AuthForm() {
 
 export function Auth() {
   return (
-    <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        {/* <Logo /> */}
-        <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          ログイン
-        </h2>
-      </div>
+    <>
+      <Pattern />
+      <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+        <div className="sm:mx-auto sm:w-full sm:max-w-md">
+          {/* <Logo /> */}
+          <h2 className="mt-6 text-center text-3xl font-bold leading-9 tracking-tight text-gray-900">
+            SiLec
+          </h2>
+        </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <AuthForm />
-        <div>
-          <div className="relative mt-10">
-            <div
-              className="absolute inset-0 flex items-center"
-              aria-hidden="true"
-            >
-              <div className="w-full border-t border-gray-200" />
+        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+          <AuthForm />
+          <div>
+            <div className="relative mt-10">
+              <div
+                className="absolute inset-0 flex items-center"
+                aria-hidden="true"
+              >
+                <div className="w-full border-t border-gray-200" />
+              </div>
+              <div className="relative flex justify-center text-sm font-medium leading-6">
+                <span className="px-6 text-gray-900">または</span>
+              </div>
             </div>
-            <div className="relative flex justify-center text-sm font-medium leading-6">
-              <span className="px-6 text-gray-900">または</span>
-            </div>
-          </div>
 
-          <div className="mt-6 grid ">
-            <GoogleButton />
+            <div className="mt-6 grid ">
+              <GoogleButton />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

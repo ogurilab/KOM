@@ -1,16 +1,39 @@
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import { useSetAtom } from "jotai";
+import dynamic from "next/dynamic";
 import { Fragment, Suspense } from "react";
 
 import { Pattern } from "@/components/pattern";
 import { navAtom } from "@/context";
-import { Register } from "@/features/courses/components/register";
-import { Nav, NavInTransition } from "@/layouts/nav";
 
 type Props = {
   children: React.ReactNode;
   title?: string;
 };
+
+const DynamicNavTransition = dynamic(
+  () => import("@/layouts/nav").then((mod) => mod.NavInTransition),
+  {
+    ssr: false,
+  }
+);
+
+const DynamicNav = dynamic(
+  () => import("@/layouts/nav").then((mod) => mod.Nav),
+  {
+    ssr: false,
+  }
+);
+
+const DynamicRegister = dynamic(
+  () =>
+    import("@/features/courses/components/register").then(
+      (mod) => mod.Register
+    ),
+  {
+    ssr: false,
+  }
+);
 
 function Layout({ children, title }: Props) {
   const setSidebarOpen = useSetAtom(navAtom);
@@ -20,8 +43,8 @@ function Layout({ children, title }: Props) {
       <div>
         <Pattern />
         <Suspense>
-          <NavInTransition />
-          <Nav />
+          <DynamicNavTransition />
+          <DynamicNav />
         </Suspense>
         <div className="sticky top-0 z-10 flex items-center gap-x-6 bg-white px-4 py-4 shadow-sm sm:px-6 lg:ml-72">
           <button
@@ -43,7 +66,7 @@ function Layout({ children, title }: Props) {
           </div>
         </main>
       </div>
-      <Register />
+      <DynamicRegister />
     </>
   );
 }

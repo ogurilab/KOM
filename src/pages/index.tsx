@@ -1,5 +1,5 @@
-import Layout from "@/layouts";
+import { Top } from "@/features/pages/top";
 
 export default function Home() {
-  return <Layout>a</Layout>;
+  return <Top />;
 }
