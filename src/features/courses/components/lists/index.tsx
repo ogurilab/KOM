@@ -5,10 +5,12 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import { useAtomValue } from "jotai";
 import { useRouter } from "next/router";
 import React, { Fragment, useState } from "react";
 import { ActiveLink } from "@/components/activeLink";
 import { Modal } from "@/components/modal";
+import { userAtom } from "@/context";
 import { useCourses, useDeleteCourse } from "@/features/courses/hooks/lists";
 import { Course as TCourse } from "@/schema/db";
 
@@ -26,6 +28,7 @@ function CourseMenu({ id, class_code }: { id: string; class_code: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const { mutateAsync } = useDeleteCourse();
   const { push, query } = useRouter();
+  const user = useAtomValue(userAtom);
 
   const onCopyHandler = () => {
     navigator.clipboard.writeText(class_code);
@@ -75,24 +78,26 @@ function CourseMenu({ id, class_code }: { id: string; class_code: string }) {
                 </button>
               )}
             </Menu.Item>
-            <Menu.Item>
-              {({ active }) => (
-                <button
-                  type="button"
-                  onClick={onCopyHandler}
-                  className={clsx(
-                    active ? "bg-gray-50" : "",
-                    "flex w-full items-center justify-center px-2 py-1 text-sm leading-6 text-gray-900"
-                  )}
-                >
-                  <DocumentDuplicateIcon
-                    className="mr-2 h-5 w-5 text-gray-400 group-hover:text-gray-500"
-                    aria-hidden="true"
-                  />
-                  <span className="font-medium">クラスIDをコピー</span>
-                </button>
-              )}
-            </Menu.Item>
+            {user?.profile?.role === "Teacher" && (
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    type="button"
+                    onClick={onCopyHandler}
+                    className={clsx(
+                      active ? "bg-gray-50" : "",
+                      "flex w-full items-center justify-center px-2 py-1 text-sm leading-6 text-gray-900"
+                    )}
+                  >
+                    <DocumentDuplicateIcon
+                      className="mr-2 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                      aria-hidden="true"
+                    />
+                    <span className="font-medium">クラスIDをコピー</span>
+                  </button>
+                )}
+              </Menu.Item>
+            )}
           </Menu.Items>
         </Transition>
       </Menu>
