@@ -30,6 +30,8 @@ export function useQueryMessages(slug: string) {
     getNextPageParam: (lastPage) => {
       if (!lastPage) return undefined;
 
+      if (lastPage.length < 100) return undefined;
+
       const last = lastPage.at(-1);
       if (!last) return undefined;
 

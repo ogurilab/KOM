@@ -58,13 +58,13 @@ function Message({ message }: { message: TMessage }) {
 }
 
 export function Messages() {
-  const { messages } = useMessages();
+  const { messages, ref } = useMessages();
   useMessageSubscriptions();
 
   return (
-    <div className="grid gap-y-6">
+    <div className="grid flex-1 gap-y-6">
       {messages?.map((message, index) => {
-        const targetDate = new Date(message.created_at);
+        const targetDate = new Date(message?.created_at || "");
         const prevMessage = messages[index - 1];
 
         const isDifferentDay = prevMessage
@@ -72,12 +72,13 @@ export function Messages() {
           : true;
 
         return (
-          <div key={message.id}>
+          <div key={message?.id}>
             {isDifferentDay && <DayIndicator date={targetDate} />}
             <Message message={message} />
           </div>
         );
       })}
+      <div className="h-4 w-full" ref={ref} />
     </div>
   );
 }
