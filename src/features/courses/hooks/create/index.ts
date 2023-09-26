@@ -82,7 +82,7 @@ export function useCreateCourse() {
   const user = useAtomValue(userAtom);
   const onNotification = useSetAtom(showNotificationAtom);
   const [code, setCode] = useState<string>("");
-  const { mutateAsync } = useMutateCourse();
+  const { mutateAsync, isPending } = useMutateCourse();
   const { mutateAsync: mutateAsyncRegister } = useRegisterCourse();
 
   const onChangeInput =
@@ -167,5 +167,6 @@ export function useCreateCourse() {
     onSubmitHandler,
     code,
     onCopyCode,
+    isPending,
   };
 }
