@@ -96,6 +96,7 @@ export interface Database {
           content: string;
           course_id: string;
           created_at: string;
+          file_path: string | null;
           id: number;
           profile_id: string;
           question_id: number | null;
@@ -107,6 +108,7 @@ export interface Database {
           content: string;
           course_id: string;
           created_at?: string;
+          file_path?: string | null;
           id?: number;
           profile_id: string;
           question_id?: number | null;
@@ -118,6 +120,7 @@ export interface Database {
           content?: string;
           course_id?: string;
           created_at?: string;
+          file_path?: string | null;
           id?: number;
           profile_id?: string;
           question_id?: number | null;
