@@ -73,7 +73,7 @@ function FilePreview({
     >
       <div
         className={clsx(
-          "group relative -ml-2 flex w-fit items-center gap-x-2 rounded-xl border p-2",
+          "group relative -ml-2 flex w-fit max-w-full items-center gap-x-2 rounded-xl border p-2",
           BorderColors[selectCategory]
         )}
       >
@@ -101,7 +101,7 @@ function FilePreview({
             </div>
             <div className="grid gap-y-1 text-sm text-gray-600">
               <p>{name}</p>
-              <p className="opacity-50">
+              <p className="line-clamp-1 opacity-50">
                 {type.split("/")[1].toLocaleUpperCase()}
               </p>
             </div>
@@ -229,7 +229,9 @@ export function MessageForm() {
             />
           </button>
         </div>
-        <p className="mt-4 text-gray-600">ルールを守って投稿してください。</p>
+        <p className="mt-4 hidden text-gray-600 sm:block">
+          ルールを守って投稿してください。
+        </p>
       </div>
     </form>
   );
