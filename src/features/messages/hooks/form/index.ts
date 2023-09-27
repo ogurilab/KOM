@@ -1,9 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { nanoid } from "nanoid";
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 import { showNotificationAtom } from "@/components/notification";
-import { messageInputRefAtom, questionAtom, userAtom } from "@/context";
+import {
+  messageInputRefAtom,
+  questionAtom,
+  selectedCategoryAtom,
+  userAtom,
+} from "@/context";
+import { useFile } from "@/features/messages/hooks/files";
 import supabase from "@/lib/supabse";
 import { Categories, Message, MessageType, RoleType } from "@/schema/db";
 
@@ -22,6 +29,7 @@ type Args = {
   updated_at?: string;
   role: RoleType;
   question_id: number | null;
+  file_path: string | null;
 };
 
 const insertMessage = async (body: Args) => {
@@ -69,9 +77,7 @@ const useMutateMessage = () => {
 };
 
 export function useMessageForm() {
-  const [selectCategory, setSelectCategory] = useState<MessageType>(
-    Categories.Others
-  );
+  const [selectCategory, setSelectCategory] = useAtom(selectedCategoryAtom);
 
   const [value, setValue] = useState("");
   const user = useAtomValue(userAtom);
@@ -83,22 +89,57 @@ export function useMessageForm() {
     setMessageInputRef(ref);
   }
 
+  const {
+    onClickFileHandler,
+    fileRef,
+    onFileChangeHandler,
+    selectedFile,
+    onDeleteHandler,
+    isPendingPreview,
+    isUploading,
+    mutateUpload,
+    setSelectedFile,
+  } = useFile({ ref });
+
   const onNotifications = useSetAtom(showNotificationAtom);
 
   const { mutateAsync, isPending } = useMutateMessage();
 
-  const onBlurHandler = () => {
-    if (questionId && !value) setQuestionId(null);
+  const onBlurHandler = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    const relatedTarget = e.relatedTarget as HTMLElement;
+    const isSelectedFileButton =
+      relatedTarget &&
+      relatedTarget.parentElement === e.currentTarget.parentElement;
+
+    if (questionId && !value && !isSelectedFileButton && !selectedFile) {
+      setQuestionId(null);
+      setSelectCategory(Categories.Others);
+    }
   };
 
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!value || !user || typeof query.slug !== "string") return;
+    if (
+      (!value && !selectedFile?.file) ||
+      !user ||
+      typeof query.slug !== "string"
+    )
+      return;
 
     if (!user.profile?.role) return;
 
     try {
+      let file_path = null;
+      if (selectedFile?.file) {
+        const { path } = await mutateUpload({
+          file: selectedFile?.file,
+          id: nanoid(),
+        });
+
+        file_path = path;
+      }
+
       await mutateAsync({
         content: value,
         course_id: query.slug,
@@ -106,10 +147,15 @@ export function useMessageForm() {
         type: selectCategory,
         role: user.profile?.role,
         question_id: questionId,
+        file_path,
       });
 
       setValue("");
       setQuestionId(null);
+      setSelectCategory(Categories.Others);
+      setSelectedFile(null);
+      if (!fileRef.current) return;
+      fileRef.current.value = "";
     } catch (error) {
       onNotifications({
         type: "error",
@@ -125,12 +171,18 @@ export function useMessageForm() {
     value,
     setValue,
     onSubmitHandler,
-    isPending,
+    isPending: isPending || isUploading,
     role: user?.profile?.role,
     messageRef,
     setMessageInputRef,
     ref,
     questionId,
     onBlurHandler,
+    onClickFileHandler,
+    fileRef,
+    onFileChangeHandler,
+    selectedFile,
+    onDeleteHandler,
+    isPendingPreview,
   };
 }

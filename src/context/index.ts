@@ -1,7 +1,7 @@
 import { Session, User } from "@supabase/supabase-js";
 import { atom } from "jotai";
 import { RefObject } from "react";
-import { Profile } from "@/schema/db";
+import { Categories, MessageType, Profile } from "@/schema/db";
 
 export const navAtom = atom(false);
 
@@ -13,6 +13,7 @@ export const questionAtom = atom<null | number>(null);
 export const messageInputRefAtom = atom<null | RefObject<HTMLTextAreaElement>>(
   null
 );
+export const selectedCategoryAtom = atom<MessageType>(Categories.Others);
 
 export const userAtom = atom<{
   data: User;

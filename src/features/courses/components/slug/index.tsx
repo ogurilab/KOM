@@ -13,14 +13,14 @@ export function Course() {
   const { data, isLoading } = useCourse();
   return (
     <Layout title={isLoading ? "Loading..." : data?.name}>
-      <div className="mb-[147px] ">
+      <div className="mb-[147px]">
         <Suspense
           fallback={
             <Loader
               theme="primary"
               variant="dots"
               size="xl"
-              className="mx-auto"
+              className="mx-auto mt-40"
             />
           }
         >

@@ -1,10 +1,16 @@
-import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
+import { DocumentTextIcon } from "@heroicons/react/24/outline";
+import {
+  PaperAirplaneIcon,
+  PlusIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/solid";
 import clsx from "clsx";
 import React from "react";
 import TextareaAutosize from "react-autosize-textarea";
 import { CategoryBadge } from "@/components/categoryBadge";
+import { Image } from "@/components/image";
 import { useMessageForm } from "@/features/messages/hooks/form";
-import { Categories } from "@/schema/db";
+import { Categories, MessageType } from "@/schema/db";
 
 const BorderColors = {
   [Categories.ChitChat]:
@@ -32,6 +38,88 @@ const SubmitColor = {
   [Categories.Others]: "bg-gray-600 hover:bg-gray-500 focus:ring-gray-500",
 };
 
+const IconColors = {
+  [Categories.ChitChat]: "bg-green-600",
+  [Categories.Answer]: "bg-purple-600",
+  [Categories.Question]: "bg-blue-600",
+  [Categories.Contact]: "bg-yellow-700",
+  [Categories.Request]: "bg-red-600",
+  [Categories.Others]: "bg-gray-600",
+};
+
+function FilePreview({
+  selectedFile,
+  selectCategory,
+  onDeleteHandler,
+  isPending,
+}: {
+  selectedFile: {
+    file: File;
+    preview: string | null;
+  };
+  selectCategory: MessageType;
+  onDeleteHandler: () => void;
+  isPending: boolean;
+}) {
+  const { name, type } = selectedFile.file;
+  const isImage = type.startsWith("image");
+
+  return (
+    <div
+      className={clsx(
+        "rounded-md rounded-b-none border border-b-0 px-4 py-2",
+        BorderColors[selectCategory]
+      )}
+    >
+      <div
+        className={clsx(
+          "group relative -ml-2 flex w-fit items-center gap-x-2 rounded-xl border p-2",
+          BorderColors[selectCategory]
+        )}
+      >
+        {selectedFile.preview && isImage ? (
+          <Image
+            isLoading={isPending}
+            src={selectedFile.preview}
+            alt={name}
+            className="rounded-md object-cover"
+            width={40}
+            height={40}
+          />
+        ) : (
+          <>
+            <div
+              className={clsx(
+                IconColors[selectCategory],
+                "grid h-10 w-10 place-items-center rounded-md p-2"
+              )}
+            >
+              <DocumentTextIcon
+                aria-hidden="true"
+                className="h-6 w-6 text-white"
+              />
+            </div>
+            <div className="grid gap-y-1 text-sm text-gray-600">
+              <p>{name}</p>
+              <p className="opacity-50">
+                {type.split("/")[1].toLocaleUpperCase()}
+              </p>
+            </div>
+          </>
+        )}
+        <button
+          onClick={onDeleteHandler}
+          aria-label="ファイルの添付を解除"
+          type="button"
+          className="absolute -right-2 -top-2 hidden rounded-full bg-gray-600 hover:bg-gray-500 group-hover:block"
+        >
+          <XMarkIcon className="h-5 w-5 text-white" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function MessageForm() {
   const {
     selectCategory,
@@ -44,6 +132,12 @@ export function MessageForm() {
     ref,
     questionId,
     onBlurHandler,
+    onClickFileHandler,
+    fileRef,
+    onFileChangeHandler,
+    selectedFile,
+    onDeleteHandler,
+    isPendingPreview,
   } = useMessageForm();
 
   return (
@@ -74,20 +168,54 @@ export function MessageForm() {
           })}
         </div>
         <div className="flex w-full max-w-lg flex-1 gap-x-4">
-          <TextareaAutosize
-            ref={ref}
-            aria-label="コメントを入力"
-            className={clsx(
-              " w-full resize-none appearance-none rounded-md border  px-4 py-2 placeholder:pt-1 placeholder:text-xs disabled:border-red-500 disabled:bg-white disabled:opacity-50  disabled:ring-red-500",
-              BorderColors[selectCategory]
+          <div className="h-max w-full">
+            {selectedFile && (
+              <FilePreview
+                onDeleteHandler={onDeleteHandler}
+                isPending={isPendingPreview}
+                selectCategory={selectCategory}
+                selectedFile={selectedFile}
+              />
             )}
-            maxRows={4}
-            onChange={(e) => setValue(e.currentTarget.value)}
-            value={value}
-            onBlur={onBlurHandler}
-            placeholder={questionId ? "回答を入力" : "コメントを入力"}
-          />
+            <div className="relative">
+              <button
+                onClick={onClickFileHandler}
+                type="button"
+                aria-label="ファイルを添付"
+                className={clsx(
+                  "absolute left-2  top-3 h-5 w-5 rounded-full",
+                  SubmitColor[selectCategory]
+                )}
+              >
+                <input
+                  accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.tsv,.rtf,.pages,.key,.numbers"
+                  onChange={onFileChangeHandler}
+                  ref={fileRef}
+                  type="file"
+                  className="sr-only"
+                />
+                <PlusIcon className="h-5 w-5 text-white" />
+              </button>
+              <TextareaAutosize
+                ref={ref}
+                aria-label="コメントを入力"
+                className={clsx(
+                  "w-full resize-none appearance-none  px-4 py-2 pl-10 placeholder:pt-1 placeholder:text-xs disabled:border-red-500 disabled:bg-white disabled:opacity-50  disabled:ring-red-500",
+                  BorderColors[selectCategory],
+                  selectedFile
+                    ? "rounded-md rounded-t-none border border-t-0 focus:ring-0"
+                    : "rounded-md border"
+                )}
+                maxRows={4}
+                onChange={(e) => setValue(e.currentTarget.value)}
+                value={value}
+                onBlur={onBlurHandler}
+                placeholder={questionId ? "回答を入力" : "コメントを入力"}
+              />
+            </div>
+          </div>
           <button
+            aria-label={isPending ? "送信中" : "送信"}
             type="submit"
             disabled={isPending}
             className={clsx(
@@ -95,7 +223,10 @@ export function MessageForm() {
               SubmitColor[selectCategory]
             )}
           >
-            <PaperAirplaneIcon className="h-6 w-6 text-white" />
+            <PaperAirplaneIcon
+              aria-hidden="true"
+              className="h-6 w-6 text-white"
+            />
           </button>
         </div>
         <p className="mt-4 text-gray-600">ルールを守って投稿してください。</p>
