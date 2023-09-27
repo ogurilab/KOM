@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { showNotificationAtom } from "@/components/notification";
-import { userAtom } from "@/context";
+import { messageInputRefAtom, questionAtom, userAtom } from "@/context";
 import supabase from "@/lib/supabse";
 import { Categories, Message, MessageType, RoleType } from "@/schema/db";
 
@@ -21,6 +21,7 @@ type Args = {
   type?: MessageType;
   updated_at?: string;
   role: RoleType;
+  question_id: number | null;
 };
 
 const insertMessage = async (body: Args) => {
@@ -71,13 +72,24 @@ export function useMessageForm() {
   const [selectCategory, setSelectCategory] = useState<MessageType>(
     Categories.Others
   );
+
   const [value, setValue] = useState("");
   const user = useAtomValue(userAtom);
   const { query } = useRouter();
+  const [questionId, setQuestionId] = useAtom(questionAtom);
+  const [messageRef, setMessageInputRef] = useAtom(messageInputRefAtom);
+  const ref = useRef<HTMLTextAreaElement>(null);
+  if (messageRef === null && ref.current !== null) {
+    setMessageInputRef(ref);
+  }
 
   const onNotifications = useSetAtom(showNotificationAtom);
 
   const { mutateAsync, isPending } = useMutateMessage();
+
+  const onBlurHandler = () => {
+    if (questionId && !value) setQuestionId(null);
+  };
 
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -93,9 +105,11 @@ export function useMessageForm() {
         profile_id: user.data.id,
         type: selectCategory,
         role: user.profile?.role,
+        question_id: questionId,
       });
 
       setValue("");
+      setQuestionId(null);
     } catch (error) {
       onNotifications({
         type: "error",
@@ -112,5 +126,11 @@ export function useMessageForm() {
     setValue,
     onSubmitHandler,
     isPending,
+    role: user?.profile?.role,
+    messageRef,
+    setMessageInputRef,
+    ref,
+    questionId,
+    onBlurHandler,
   };
 }

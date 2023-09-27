@@ -98,6 +98,7 @@ export interface Database {
           created_at: string;
           id: number;
           profile_id: string;
+          question_id: number | null;
           role: Database["public"]["Enums"]["user_role"];
           type: Database["public"]["Enums"]["message_type"] | null;
           updated_at: string;
@@ -108,6 +109,7 @@ export interface Database {
           created_at?: string;
           id?: number;
           profile_id: string;
+          question_id?: number | null;
           role: Database["public"]["Enums"]["user_role"];
           type?: Database["public"]["Enums"]["message_type"] | null;
           updated_at?: string;
@@ -118,6 +120,7 @@ export interface Database {
           created_at?: string;
           id?: number;
           profile_id?: string;
+          question_id?: number | null;
           role?: Database["public"]["Enums"]["user_role"];
           type?: Database["public"]["Enums"]["message_type"] | null;
           updated_at?: string;
@@ -133,6 +136,12 @@ export interface Database {
             foreignKeyName: "messages_profile_id_fkey";
             columns: ["profile_id"];
             referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "messages_question_id_fkey";
+            columns: ["question_id"];
+            referencedRelation: "messages";
             referencedColumns: ["id"];
           },
         ];
@@ -167,22 +176,16 @@ export interface Database {
       [_ in never]: never;
     };
     Functions: {
-      get_role_by_user_id:
-        | {
-            Args: {
-              user_id: string;
-            };
-            Returns: string;
-          }
-        | {
-            Args: {
-              user_id: string;
-            };
-            Returns: string;
-          };
+      [_ in never]: never;
     };
     Enums: {
-      message_type: "Question" | "Contact" | "Request" | "ChitChat" | "Others";
+      message_type:
+        | "Question"
+        | "Contact"
+        | "Request"
+        | "ChitChat"
+        | "Others"
+        | "Answer";
       user_role: "Teacher" | "Student";
     };
     CompositeTypes: {
@@ -201,6 +204,7 @@ export type MessageType = Database["public"]["Enums"]["message_type"];
 
 export const Categories = {
   Question: "Question" as MessageType,
+  Answer: "Answer" as MessageType,
   Contact: "Contact" as MessageType,
   Request: "Request" as MessageType,
   ChitChat: "ChitChat" as MessageType,

@@ -26,18 +26,29 @@ const categories: Categories = {
     label: "依頼",
     color: "bg-red-50 text-red-600 ring-red-600/10",
   },
+  Answer: {
+    label: "回答",
+    color: "bg-purple-50 text-purple-600 ring-purple-600/10",
+  },
   Others: {
     label: "その他",
     color: "bg-gray-50 text-gray-600 ring-gray-600/10",
   },
 } as const;
 
-export function CategoryBadge({ category }: { category: MessageType }) {
+export function CategoryBadge({
+  category,
+  className,
+}: {
+  category: MessageType;
+  className?: string;
+}) {
   return (
     <span
       className={clsx(
         "inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium ring-1 ring-inset",
-        categories[category].color
+        categories[category].color,
+        className
       )}
     >
       {categories[category].label}
