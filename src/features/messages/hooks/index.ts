@@ -5,9 +5,8 @@ import { useQueryMessages } from "@/features/messages/api";
 
 export function useMessages() {
   const { query } = useRouter();
-  const { data, isPending, fetchNextPage, hasNextPage } = useQueryMessages(
-    query.slug as string
-  );
+  const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useQueryMessages(query.slug as string);
 
   const { ref } = useInView({
     onChange: (inView) => {
@@ -34,6 +33,7 @@ export function useMessages() {
   }, [data?.pages, isPending]);
 
   return {
+    isFetchingNextPage,
     messages,
     isPending,
     ref,
