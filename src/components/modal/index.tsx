@@ -76,7 +76,7 @@ Modal.Description = function ModalDescription({
   return (
     <Dialog.Description
       {...props}
-      className={cn("mt-2 text-sm text-gray-500", className)}
+      className={cn("mt-2 text-sm text-gray-600", className)}
     >
       {children}
     </Dialog.Description>

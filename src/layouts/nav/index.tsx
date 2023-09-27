@@ -1,8 +1,10 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { Fragment, Suspense } from "react";
+import { Loader } from "@/components/loader";
 import { navAtom, registerModalAtom, userAtom } from "@/context";
 import { Courses } from "@/features/courses/components/lists";
 
@@ -24,18 +26,17 @@ export function Nav() {
   return (
     <div className="hidden lg:fixed lg:inset-y-0 lg:z-20 lg:flex lg:w-72 lg:flex-col">
       <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white/60 px-6 py-4">
-        <div className="flex h-16 shrink-0 items-center">
-          {/* <img
-            className="h-8 w-auto"
-            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-            alt="Your Company"
-          /> */}
-        </div>
+        <Link href="/" className="flex shrink-0 items-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="w-24" src="/logo.png" alt="SiLec" />
+        </Link>
         <nav className="flex flex-1 flex-col gap-y-8">
           <p className="text-gay-900 border-b pb-2 font-semibold">講義</p>
           <ul className="flex flex-1 flex-col gap-y-7">
             <li>
-              <Suspense>
+              <Suspense
+                fallback={<Loader variant="dots" className="mx-auto" />}
+              >
                 <Courses />
               </Suspense>
             </li>
@@ -127,13 +128,10 @@ export function NavInTransition() {
               </Transition.Child>
               {/* Sidebar component, swap this element with another sidebar if you like */}
               <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2">
-                <div className="flex h-16 shrink-0 items-center">
-                  {/* <img
-                    className="h-8 w-auto"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                    alt="Your Company"
-                  /> */}
-                </div>
+                <Link href="/" className="flex shrink-0 items-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img className="w-24" src="/logo.png" alt="SiLec" />
+                </Link>
                 <nav className="flex flex-1 flex-col gap-y-8">
                   <p className="text-gay-900 border-b pb-2 font-semibold">
                     講義

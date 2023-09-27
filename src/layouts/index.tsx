@@ -3,6 +3,7 @@ import { useSetAtom } from "jotai";
 import dynamic from "next/dynamic";
 import { Fragment, Suspense } from "react";
 
+import { Loader } from "@/components/loader";
 import { Pattern } from "@/components/pattern";
 import { navAtom } from "@/context";
 
@@ -22,6 +23,13 @@ const DynamicNav = dynamic(
   () => import("@/layouts/nav").then((mod) => mod.Nav),
   {
     ssr: false,
+    loading: () => (
+      <div className="hidden lg:fixed lg:inset-y-0 lg:z-20 lg:flex lg:w-72 lg:flex-col">
+        <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white/60 px-6 py-4">
+          <Loader variant="dots" className="mx-auto" />
+        </div>
+      </div>
+    ),
   }
 );
 

@@ -6,8 +6,10 @@ import {
   DocumentDuplicateIcon,
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import { useSetAtom } from "jotai";
 import React, { Fragment } from "react";
 import { Loader } from "@/components/loader";
+import { registerModalAtom } from "@/context";
 import { useCreateCourse } from "@/features/courses/hooks/create";
 import Layout from "@/layouts";
 
@@ -133,6 +135,7 @@ export function CreateCourse() {
     onCopyCode,
     isPending,
   } = useCreateCourse();
+  const setOpen = useSetAtom(registerModalAtom);
 
   const steps = [
     {
@@ -213,13 +216,22 @@ export function CreateCourse() {
   return (
     <Layout>
       <div className="pb-72">
-        <div className="px-4 sm:px-0">
-          <h3 className="text-base font-semibold leading-7 text-gray-900">
-            講義の作成
-          </h3>
-          <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
-            生徒が登録する講義を作成します。
-          </p>
+        <div className="flex flex-col items-start justify-between gap-4 px-4 sm:flex-row sm:px-0">
+          <div>
+            <h3 className="text-base font-semibold leading-7 text-gray-900">
+              講義の作成
+            </h3>
+            <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
+              生徒が登録する講義を作成します。
+            </p>
+          </div>
+          <button
+            className="inline-flex max-w-xs items-center rounded-md border border-transparent bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+            onClick={() => setOpen(true)}
+            type="button"
+          >
+            作成済みの講義を登録する
+          </button>
         </div>
         <form onSubmit={onSubmitHandler} className="mt-6">
           <dl className="divide-y divide-gray-300">
