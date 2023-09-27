@@ -7,7 +7,7 @@ import { registerModalAtom, userAtom } from "@/context";
 import { useRegisterCourse } from "@/features/courses/hooks/register";
 import { getSupabaseError } from "@/lib/error";
 
-function RegisterForm({
+export function RegisterForm({
   onChangeId,
   onChangePassword,
   class_code,
@@ -42,7 +42,7 @@ function RegisterForm({
   );
 }
 
-function RegisterModal() {
+function useRegister() {
   const [open, setOpen] = useAtom(registerModalAtom);
   const { mutateAsync } = useRegisterCourse();
   const [value, setValue] = React.useState({
@@ -87,6 +87,19 @@ function RegisterModal() {
     });
   };
 
+  return {
+    open,
+    setOpen,
+    value,
+    onChangeHandler,
+    onSubmitHandler,
+  };
+}
+
+function RegisterModal() {
+  const { open, setOpen, value, onChangeHandler, onSubmitHandler } =
+    useRegister();
+
   return (
     <Modal open={open} onClose={() => setOpen(false)}>
       <Modal.Title className="text-center">授業登録</Modal.Title>
@@ -108,6 +121,29 @@ function RegisterModal() {
         </div>
       </form>
     </Modal>
+  );
+}
+
+export function RegisterTop() {
+  const { value, onChangeHandler, onSubmitHandler } = useRegister();
+  return (
+    <form onSubmit={onSubmitHandler}>
+      <div className="my-8 text-sm text-gray-600">
+        <RegisterForm
+          onChangeId={onChangeHandler("class_code")}
+          onChangePassword={onChangeHandler("password")}
+          {...value}
+        />
+      </div>
+      <div className="mt-5 grid gap-3 sm:mt-6">
+        <button
+          type="submit"
+          className="mx-auto inline-flex w-full max-w-xs justify-center  rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+        >
+          登録
+        </button>
+      </div>
+    </form>
   );
 }
 

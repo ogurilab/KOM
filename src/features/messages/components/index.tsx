@@ -47,12 +47,12 @@ function File({ path }: { path: string }) {
   return (
     <div>
       {data?.isImage ? (
-        <div>
+        <div className="rounded-md border">
           <Image
             isStyle={false}
             src={data.url}
             alt={data.url}
-            className="max-h-80 max-w-full rounded-md object-cover"
+            className="max-h-60 max-w-full rounded-md object-cover"
           />
         </div>
       ) : (
@@ -81,6 +81,19 @@ function File({ path }: { path: string }) {
 }
 
 function DayIndicator({ date }: { date: Date }) {
+  const today = new Date();
+  const someDate = new Date(date); // dateは比較対象の日付
+
+  const isToday =
+    today.getDate() === someDate.getDate() &&
+    today.getMonth() === someDate.getMonth() &&
+    today.getFullYear() === someDate.getFullYear();
+
+  const isYesterday =
+    today.getDate() - 1 === someDate.getDate() &&
+    today.getMonth() === someDate.getMonth() &&
+    today.getFullYear() === someDate.getFullYear();
+
   return (
     <div className="relative my-4">
       <div className="absolute inset-0 flex items-center" aria-hidden="true">
@@ -92,11 +105,16 @@ function DayIndicator({ date }: { date: Date }) {
             dateTime={date.toISOString()}
             className="text-xs font-semibold text-gray-900"
           >
-            {new Date(date).toLocaleDateString("ja-JP", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
+            {/* eslint-disable-next-line no-nested-ternary */}
+            {isToday
+              ? "今日"
+              : isYesterday
+              ? "昨日"
+              : new Date(date).toLocaleDateString("ja-JP", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
           </time>
           <ChevronDoubleDownIcon
             aria-hidden="true"
@@ -130,53 +148,63 @@ const MemoMessage = memo(({ message }: { message: TMessage }) => {
   };
 
   return (
-    <div
-      className={clsx(
-        "flex w-full flex-col",
-        message?.role === "Student" ? "items-end pl-20" : "items-start pr-20"
-      )}
-    >
-      {message.type && (
-        <div>
-          <CategoryBadge category={message.type} />
-        </div>
-      )}
-
-      <div className="my-4 grid gap-y-2 px-1">
-        <p className="inline-block text-sm  md:text-base">{message.content}</p>
-        {isAnswer && (
-          <div className="rounded-md border-2 bg-white/80 p-2  outline outline-gray-300">
-            {isPending ? (
-              <div className="px-6">
-                <Loader variant="dots" />
-              </div>
-            ) : (
-              <>
-                {data?.type && (
-                  <div className="mb-1">
-                    <CategoryBadge category={data.type} />
-                  </div>
-                )}
-                <p className="text-sm">{data?.content}</p>
-              </>
-            )}
+    <div className="flex gap-x-2">
+      <Image
+        src="/teacher.png"
+        className="h-10 w-10 rounded-full"
+        alt="teacher"
+        isStyle={false}
+      />
+      <div
+        className={clsx(
+          "flex w-full flex-1 flex-col",
+          message?.role === "Student" ? "items-end pl-20" : "items-start pr-20"
+        )}
+      >
+        {message.type && (
+          <div>
+            <CategoryBadge category={message.type} />
           </div>
         )}
-        {message.file_path && (
-          <Suspense fallback={<FileLoader />}>
-            <File path={message.file_path} />
-          </Suspense>
+
+        <div className="my-4 grid gap-y-2 px-1">
+          <p className="inline-block text-sm  md:text-base">
+            {message.content}
+          </p>
+          {isAnswer && (
+            <div className="rounded-md border-2 bg-white/80 p-2  outline outline-gray-300">
+              {isPending ? (
+                <div className="px-6">
+                  <Loader variant="dots" />
+                </div>
+              ) : (
+                <>
+                  {data?.type && (
+                    <div className="mb-1">
+                      <CategoryBadge category={data.type} />
+                    </div>
+                  )}
+                  <p className="text-sm">{data?.content}</p>
+                </>
+              )}
+            </div>
+          )}
+          {message.file_path && (
+            <Suspense fallback={<FileLoader />}>
+              <File path={message.file_path} />
+            </Suspense>
+          )}
+        </div>
+        {canAnswer && (
+          <button
+            type="button"
+            onClick={onClickHandler}
+            className="text-sm text-blue-600 hover:text-blue-500 "
+          >
+            回答する
+          </button>
         )}
       </div>
-      {canAnswer && (
-        <button
-          type="button"
-          onClick={onClickHandler}
-          className="text-sm text-blue-600 hover:text-blue-500 "
-        >
-          回答する
-        </button>
-      )}
     </div>
   );
 });

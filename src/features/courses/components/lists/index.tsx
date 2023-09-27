@@ -9,6 +9,7 @@ import { useAtomValue } from "jotai";
 import { useRouter } from "next/router";
 import React, { Fragment, useState } from "react";
 import { ActiveLink } from "@/components/activeLink";
+import { Loader } from "@/components/loader";
 import { Modal } from "@/components/modal";
 import { userAtom } from "@/context";
 import { useCourses, useDeleteCourse } from "@/features/courses/hooks/lists";
@@ -129,7 +130,7 @@ function Course({ course }: { course: TCourse }) {
         }}
         as={`/courses/${course?.id}`}
         activeClassName="text-blue-600"
-        className="group flex flex-1 items-center gap-x-3 rounded-md p-2 text-sm leading-6 text-gray-700 hover:bg-gray-100 hover:text-blue-600"
+        className="group flex flex-1 items-center gap-x-3 rounded-md p-2 text-sm leading-6 text-gray-700 hover:bg-gray-100/30 hover:text-blue-600"
       >
         {({ isActive }) => (
           <>
@@ -175,23 +176,29 @@ function SplitCourses({
 }
 
 export function Courses() {
-  const { data } = useCourses();
+  const { data, isPending } = useCourses();
   const hasData = data?.some((courses) => courses.length > 0);
+
+  if (isPending) {
+    return <Loader variant="dots" className="mx-auto" />;
+  }
+
+  if (!hasData)
+    return (
+      <div className="flex justify-center">
+        <p>コースがありません</p>
+      </div>
+    );
 
   return (
     <ul className="grid gap-y-8">
-      {hasData ? (
+      {hasData &&
         data?.map((courses, i) => {
           return courses.length > 0 ? (
             // eslint-disable-next-line react/no-array-index-key
             <SplitCourses key={`courses-${i}`} courses={courses} index={i} />
           ) : null;
-        })
-      ) : (
-        <div className="flex justify-center">
-          <p>コースがありません</p>
-        </div>
-      )}
+        })}
     </ul>
   );
 }
