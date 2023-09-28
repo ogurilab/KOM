@@ -12,7 +12,7 @@ import { ActiveLink } from "@/components/activeLink";
 import { Loader } from "@/components/loader";
 import { Modal } from "@/components/modal";
 import { showNotificationAtom } from "@/components/notification";
-import { userAtom } from "@/context";
+import { navAtom, userAtom } from "@/context";
 import { useCourses, useDeleteCourse } from "@/features/courses/hooks/lists";
 import { Course as TCourse } from "@/schema/db";
 
@@ -128,9 +128,11 @@ function CourseMenu({ id, class_code }: { id: string; class_code: string }) {
 }
 
 function Course({ course }: { course: TCourse }) {
+  const setIsNavOpen = useSetAtom(navAtom);
   return (
     <li key={course?.name} className="flex">
       <ActiveLink
+        onTransitionComplete={() => setIsNavOpen(false)}
         href={{
           pathname: `/courses/${course?.id}`,
           query: { name: course?.name ?? "" },

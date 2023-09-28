@@ -63,14 +63,16 @@ export function NavInTransition() {
   const user = useAtomValue(userAtom);
   const { push } = useRouter();
 
-  const onClickHandler = () => {
+  const onClickHandler = async () => {
     if (user?.profile?.role === "Student") {
       setRegisterModal(true);
 
+      setSidebarOpen(false);
       return;
     }
 
-    push("/courses/create");
+    await push("/courses/create");
+    setSidebarOpen(false);
   };
 
   return (
