@@ -6,12 +6,14 @@ import { useRouter } from "next/router";
 import React, { Fragment, Suspense } from "react";
 import { Loader } from "@/components/loader";
 import { navAtom, registerModalAtom, userAtom } from "@/context";
+import { useGoogle } from "@/features/auth/hooks/useGoogle";
 import { Courses } from "@/features/courses/components/lists";
 
 export function Nav() {
   const setRegisterModal = useSetAtom(registerModalAtom);
   const { push } = useRouter();
   const user = useAtomValue(userAtom);
+  const { signOut } = useGoogle();
 
   const onClickHandler = () => {
     if (user?.profile?.role === "Student") {
@@ -30,6 +32,13 @@ export function Nav() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className="w-24" src="/logo.png" alt="SiLec" />
         </Link>
+        <button
+          type="button"
+          className="mx-auto flex w-max justify-center gap-8 rounded-md bg-red-600 px-2 py-2 text-xs text-white"
+          onClick={signOut}
+        >
+          ログアウト
+        </button>
         <nav className="flex flex-1 flex-col gap-y-8">
           <p className="text-gay-900 border-b pb-2 font-semibold">講義</p>
           <ul className="flex flex-1 flex-col gap-y-7">
@@ -62,6 +71,7 @@ export function NavInTransition() {
   const setRegisterModal = useSetAtom(registerModalAtom);
   const user = useAtomValue(userAtom);
   const { push } = useRouter();
+  const { signOut } = useGoogle();
 
   const onClickHandler = async () => {
     if (user?.profile?.role === "Student") {
@@ -134,6 +144,13 @@ export function NavInTransition() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img className="w-24" src="/logo.png" alt="SiLec" />
                 </Link>
+                <button
+                  type="button"
+                  className="mx-auto flex w-max justify-center gap-8 rounded-md bg-red-600 px-2 py-2 text-xs text-white"
+                  onClick={signOut}
+                >
+                  ログアウト
+                </button>
                 <nav className="flex flex-1 flex-col gap-y-8">
                   <p className="text-gay-900 border-b pb-2 font-semibold">
                     講義
