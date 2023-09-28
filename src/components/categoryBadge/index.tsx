@@ -12,7 +12,7 @@ type Categories = {
 const categories: Categories = {
   ChitChat: {
     label: "雑談",
-    color: "bg-green-50 text-green-600 ring-green-600/10",
+    color: "bg-green-50 text-green-700 ring-green-700/10",
   },
   Question: {
     label: "質問",
@@ -24,7 +24,7 @@ const categories: Categories = {
   },
   Request: {
     label: "依頼",
-    color: "bg-red-50 text-red-600 ring-red-600/10",
+    color: "bg-red-50 text-red-700 ring-red-700/10",
   },
   Answer: {
     label: "回答",

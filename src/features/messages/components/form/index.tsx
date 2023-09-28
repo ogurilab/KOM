@@ -188,6 +188,7 @@ export function MessageForm() {
                 )}
               >
                 <input
+                  aria-label="ファイルを添付"
                   accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.tsv,.rtf,.pages,.key,.numbers"
                   onChange={onFileChangeHandler}
                   ref={fileRef}

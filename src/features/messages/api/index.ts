@@ -6,11 +6,12 @@ import {
 import { useAtomValue } from "jotai";
 import { userAtom } from "@/context";
 import supabase from "@/lib/supabse";
-import { Message } from "@/schema/db";
+import { Categories, Message } from "@/schema/db";
 
 type GetMessages = {
   slug: string;
   created_at: string;
+  only_q_and_a: boolean;
 };
 
 type InfiniteMessages = {
@@ -32,24 +33,37 @@ async function getQuestion({ question_id }: { question_id: number | null }) {
   return data;
 }
 
-async function getMessages({ slug, created_at }: GetMessages) {
+async function getMessages({ slug, created_at, only_q_and_a }: GetMessages) {
   const { data } = await supabase
     .from("messages")
     .select("*,profile:profiles(*)")
     .eq("course_id", slug)
     .lt("created_at", created_at)
+    .in("type", [
+      Categories.Question,
+      ...(only_q_and_a
+        ? [Categories.Answer]
+        : [
+            Categories.Answer,
+            Categories.Others,
+            Categories.ChitChat,
+            Categories.Request,
+            Categories.Contact,
+          ]),
+    ])
     .order("created_at", { ascending: false })
     .limit(100);
 
   return data;
 }
 
-export function useQueryMessages(slug: string) {
+export function useQueryMessages(slug: string, only_q_and_a: boolean) {
   const user = useAtomValue(userAtom);
 
   return useInfiniteQuery({
-    queryKey: ["messages", slug],
-    queryFn: ({ pageParam }) => getMessages({ slug, created_at: pageParam }),
+    queryKey: ["messages", slug, only_q_and_a],
+    queryFn: ({ pageParam }) =>
+      getMessages({ slug, created_at: pageParam, only_q_and_a }),
 
     getNextPageParam: (lastPage) => {
       if (!lastPage) return undefined;
@@ -64,6 +78,7 @@ export function useQueryMessages(slug: string) {
 
     initialPageParam: new Date().toISOString(),
     enabled: !!user && !!slug,
+    gcTime: 0,
   });
 }
 

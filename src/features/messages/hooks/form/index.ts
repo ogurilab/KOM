@@ -6,6 +6,7 @@ import { useRef, useState } from "react";
 import { showNotificationAtom } from "@/components/notification";
 import {
   messageInputRefAtom,
+  qAndAAtom,
   questionAtom,
   selectedCategoryAtom,
   userAtom,
@@ -47,6 +48,7 @@ const insertMessage = async (body: Args) => {
 const useMutateMessage = () => {
   const queryClient = useQueryClient();
   const { query } = useRouter();
+  const isQAndA = useAtomValue(qAndAAtom);
 
   return useMutation({
     mutationFn: insertMessage,
@@ -56,6 +58,7 @@ const useMutateMessage = () => {
       const prevData = queryClient.getQueryData<InfiniteMessages>([
         "messages",
         query.slug,
+        isQAndA,
       ]);
 
       if (!prevData) return;
@@ -68,10 +71,13 @@ const useMutateMessage = () => {
         return page;
       });
 
-      queryClient.setQueryData<InfiniteMessages>(["messages", query.slug], {
-        pageParams: prevData.pageParams,
-        pages: newPage,
-      });
+      queryClient.setQueryData<InfiniteMessages>(
+        ["messages", query.slug, isQAndA],
+        {
+          pageParams: prevData.pageParams,
+          pages: newPage,
+        }
+      );
     },
   });
 };
