@@ -23,11 +23,19 @@ const DynamicAuthProvider = dynamic(
   }
 );
 
+const DynamicNextNProgress = dynamic(() => import("nextjs-progressbar"));
+
 export default function App({ Component, pageProps }: AppProps) {
   const [client] = useState(() => queryClient);
 
   return (
     <QueryClientProvider client={client}>
+      <DynamicNextNProgress
+        color="#2563eb"
+        height={3}
+        options={{ showSpinner: false }}
+        startPosition={0.1}
+      />
       <DynamicAuthProvider />
       <DynamicNotification />
       <Component {...pageProps} />
