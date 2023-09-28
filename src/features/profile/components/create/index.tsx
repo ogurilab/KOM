@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { useAtom, useSetAtom } from "jotai";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+import { Title } from "@/components/meta";
 import { showNotificationAtom } from "@/components/notification";
 import { Pattern } from "@/components/pattern";
 import { userAtom } from "@/context";
@@ -150,6 +151,7 @@ function SelectRole() {
 export function CreateProfile() {
   return (
     <>
+      <Title title="プロフィール作成" />
       <Pattern />
       <div className="flex min-h-screen flex-1 flex-col  px-6 py-12 lg:px-8">
         <div className="mt-0 flex  max-w-xl flex-1 flex-col items-center gap-y-6 sm:mx-auto  sm:w-full ">

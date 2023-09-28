@@ -1,5 +1,6 @@
 import React, { Suspense } from "react";
 import { Loader } from "@/components/loader";
+import { Title } from "@/components/meta";
 import useCourse from "@/features/courses/hooks/slug";
 import { Messages } from "@/features/messages/components";
 import { MessageForm } from "@/features/messages/components/form";
@@ -13,6 +14,7 @@ export function Course() {
   const { data, isLoading } = useCourse();
   return (
     <Layout title={isLoading ? "Loading..." : data?.name}>
+      <Title title={data?.name} />
       <div className="mb-[147px]">
         <Suspense
           fallback={

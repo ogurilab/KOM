@@ -1,4 +1,5 @@
 import React from "react";
+import { Title } from "@/components/meta";
 import { Pattern } from "@/components/pattern";
 import { useForm } from "@/features/auth/hooks/useForm";
 import { useGoogle } from "@/features/auth/hooks/useGoogle";
@@ -128,6 +129,7 @@ function AuthForm() {
 export function Auth() {
   return (
     <>
+      <Title />
       <Pattern />
       <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">

@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import React from "react";
+import { Title } from "@/components/meta";
 import Layout from "@/layouts";
 
 const DynamicRegister = dynamic(
@@ -15,6 +16,7 @@ const DynamicRegister = dynamic(
 export function Top() {
   return (
     <Layout title="Home">
+      <Title />
       <h2 className="text-center text-3xl font-bold text-gray-900">
         <span>Welcome to</span>
         <span className="text-blue-600"> SiLec</span>

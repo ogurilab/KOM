@@ -9,6 +9,7 @@ import clsx from "clsx";
 import { useSetAtom } from "jotai";
 import React, { Fragment } from "react";
 import { Loader } from "@/components/loader";
+import { Title } from "@/components/meta";
 import { registerModalAtom } from "@/context";
 import { useCreateCourse } from "@/features/courses/hooks/create";
 import Layout from "@/layouts";
@@ -215,6 +216,7 @@ export function CreateCourse() {
 
   return (
     <Layout>
+      <Title title="講義の作成" />
       <div className="pb-72">
         <div className="flex flex-col items-start justify-between gap-4 px-4 sm:flex-row sm:px-0">
           <div>
