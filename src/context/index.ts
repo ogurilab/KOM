@@ -19,3 +19,5 @@ export const userAtom = atom<{
   data: User;
   profile: Omit<Profile, "created_at"> | null;
 } | null>(null);
+
+export const qAndAAtom = atom(false);

@@ -1,12 +1,15 @@
+import { useAtomValue } from "jotai";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 import { useInView } from "react-intersection-observer";
+import { qAndAAtom } from "@/context";
 import { useQueryMessages } from "@/features/messages/api";
 
 export function useMessages() {
   const { query } = useRouter();
+  const isQAndA = useAtomValue(qAndAAtom);
   const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useQueryMessages(query.slug as string);
+    useQueryMessages(query.slug as string, isQAndA);
 
   const { ref } = useInView({
     onChange: (inView) => {

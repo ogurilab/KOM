@@ -5,12 +5,13 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useRouter } from "next/router";
 import React, { Fragment, useState } from "react";
 import { ActiveLink } from "@/components/activeLink";
 import { Loader } from "@/components/loader";
 import { Modal } from "@/components/modal";
+import { showNotificationAtom } from "@/components/notification";
 import { userAtom } from "@/context";
 import { useCourses, useDeleteCourse } from "@/features/courses/hooks/lists";
 import { Course as TCourse } from "@/schema/db";
@@ -30,6 +31,7 @@ function CourseMenu({ id, class_code }: { id: string; class_code: string }) {
   const { mutateAsync } = useDeleteCourse();
   const { push, query } = useRouter();
   const user = useAtomValue(userAtom);
+  const onNotification = useSetAtom(showNotificationAtom);
 
   const onCopyHandler = () => {
     navigator.clipboard.writeText(class_code);
@@ -42,6 +44,11 @@ function CourseMenu({ id, class_code }: { id: string; class_code: string }) {
 
     if (query.slug === id) push("/");
     setIsOpen(false);
+
+    onNotification({
+      type: "success",
+      title: "コースを削除しました",
+    });
   };
 
   return (

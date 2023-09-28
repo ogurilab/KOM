@@ -149,12 +149,14 @@ const MemoMessage = memo(({ message }: { message: TMessage }) => {
 
   return (
     <div className="flex gap-x-2">
-      <Image
-        src="/teacher.png"
-        className="h-10 w-10 rounded-full"
-        alt="teacher"
-        isStyle={false}
-      />
+      {message.role === "Teacher" && (
+        <Image
+          src="/teacher.png"
+          className="h-10 w-10 rounded-full"
+          alt="teacher"
+          isStyle={false}
+        />
+      )}
       <div
         className={clsx(
           "flex w-full flex-1 flex-col",

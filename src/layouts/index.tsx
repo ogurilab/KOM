@@ -10,6 +10,7 @@ import { navAtom } from "@/context";
 type Props = {
   children: React.ReactNode;
   title?: string;
+  side?: React.ReactNode;
 };
 
 const DynamicNavTransition = dynamic(
@@ -43,7 +44,7 @@ const DynamicRegister = dynamic(
   }
 );
 
-function Layout({ children, title }: Props) {
+function Layout({ children, title, side }: Props) {
   const setSidebarOpen = useSetAtom(navAtom);
 
   return (
@@ -63,9 +64,10 @@ function Layout({ children, title }: Props) {
             <span className="sr-only">Open sidebar</span>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
-          <div className="flex-1 text-sm font-semibold leading-6 text-gray-900 ">
+          <div className="line-clamp-1 flex-1 text-sm font-semibold leading-6 text-gray-900 ">
             {title ?? "SiLec"}
           </div>
+          {side}
         </div>
 
         <main className="lg:pl-72">
