@@ -25,7 +25,7 @@ export function Course() {
       }
     >
       <Title title={data?.name} />
-      <div className="mb-[147px]">
+      <div className="mb-32">
         <Suspense
           fallback={
             <Loader
