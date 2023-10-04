@@ -137,7 +137,7 @@ export function Messages() {
   const hasMessages = messages?.length > 0;
 
   return (
-    <div className="flex flex-1 flex-col gap-y-6">
+    <div className="grid flex-1 gap-y-6">
       {hasMessages ? (
         messages?.map((message, index) => {
           const targetDate = new Date(message?.created_at || "");

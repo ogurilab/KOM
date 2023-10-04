@@ -50,14 +50,23 @@ function Answer({
   content,
   created_at,
   id,
+  i,
 }: {
   content: TMessage["content"];
   created_at: TMessage["created_at"];
   id: TMessage["id"];
+  i: number;
 }) {
   return (
     <div key={id} className="flex flex-col">
-      <p className="flex-1 font-medium leading-7 text-gray-900">{content}</p>
+      <p className="flex-1 font-medium leading-7 text-gray-900">
+        {i === 0 && (
+          <span className="mr-1 inline-flex max-w-max items-center rounded-md bg-pink-50 px-2 py-1 text-xs font-medium text-pink-700 ring-1 ring-inset ring-red-700/10">
+            最新
+          </span>
+        )}
+        {content}
+      </p>
       <time
         dateTime={new Date(created_at).toISOString()}
         className="ml-auto text-xs text-gray-600"
@@ -100,8 +109,9 @@ function AnswerModalContent({
       <Modal.Description as="div" className="my-4">
         <p className="mb-2 font-semibold text-blue-600">回答一覧</p>
         <div className="grid max-h-48 gap-y-6 overflow-y-auto">
-          {data?.map((answer) => (
+          {data?.map((answer, i) => (
             <Answer
+              i={i}
               key={answer?.id}
               content={answer?.content}
               created_at={answer?.created_at}
