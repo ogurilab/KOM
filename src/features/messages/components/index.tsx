@@ -7,6 +7,9 @@ import { Image } from "@/components/image";
 import { Loader } from "@/components/loader";
 
 import { File, FileLoader } from "@/features/files/components";
+import Question, {
+  QuestionLoader,
+} from "@/features/messages/components/question";
 import { useMessage, useMessages } from "@/features/messages/hooks";
 import { useMessageSubscriptions } from "@/features/messages/hooks/subscriptions";
 import { Message as TMessage } from "@/schema/db";
@@ -23,15 +26,13 @@ const MemoMessage = memo(({ message }: { message: TMessage }) => {
     question_id,
   } = message;
 
-  const { data, isPending, onClickHandler, canAnswer, isAnswer, hasAnswer } =
-    useMessage({
-      id,
-      role,
-      type,
-      course_id,
-      question_id,
-      has_response,
-    });
+  const { onClickHandler, canAnswer, isAnswer, hasAnswer } = useMessage({
+    id,
+    role,
+    type,
+    question_id,
+    has_response,
+  });
 
   return (
     <div className="flex gap-x-2">
@@ -64,22 +65,9 @@ const MemoMessage = memo(({ message }: { message: TMessage }) => {
         <div className="my-4 grid gap-y-2 px-1">
           <p className="inline-block text-sm  md:text-base">{content}</p>
           {isAnswer && (
-            <div className="rounded-md border-2 bg-white/80 p-2  outline outline-gray-300">
-              {isPending ? (
-                <div className="px-6">
-                  <Loader variant="dots" />
-                </div>
-              ) : (
-                <>
-                  {data?.type && (
-                    <div className="mb-1">
-                      <CategoryBadge category={data.type} />
-                    </div>
-                  )}
-                  <p className="text-sm">{data?.content}</p>
-                </>
-              )}
-            </div>
+            <Suspense fallback={<QuestionLoader />}>
+              <Question question_id={question_id} course_id={course_id} />
+            </Suspense>
           )}
 
           {file_path && (
@@ -124,23 +112,32 @@ export function Messages() {
       />
     );
   }
+
+  const hasMessages = messages?.length > 0;
+
   return (
     <div className="grid flex-1 gap-y-6">
-      {messages?.map((message, index) => {
-        const targetDate = new Date(message?.created_at || "");
-        const prevMessage = messages[index - 1];
+      {hasMessages ? (
+        messages?.map((message, index) => {
+          const targetDate = new Date(message?.created_at || "");
+          const prevMessage = messages[index - 1];
 
-        const isDifferentDay = prevMessage
-          ? getIsDifferentDay(targetDate, new Date(prevMessage?.created_at))
-          : true;
+          const isDifferentDay = prevMessage
+            ? getIsDifferentDay(targetDate, new Date(prevMessage?.created_at))
+            : true;
 
-        return (
-          <div key={message?.id}>
-            {isDifferentDay && <DayIndicator date={targetDate} />}
-            <MemoMessage message={message} />
-          </div>
-        );
-      })}
+          return (
+            <div key={message?.id}>
+              {isDifferentDay && <DayIndicator date={targetDate} />}
+              <MemoMessage message={message} />
+            </div>
+          );
+        })
+      ) : (
+        <div className="mt-40 text-center text-gray-400">
+          メッセージはありません
+        </div>
+      )}
       {isFetchingNextPage && (
         <Loader theme="primary" variant="dots" size="xl" className="mx-auto" />
       )}

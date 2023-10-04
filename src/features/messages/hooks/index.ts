@@ -9,7 +9,7 @@ import {
   selectedCategoryAtom,
   userAtom,
 } from "@/context";
-import { useQueryMessages, useQueryQuestion } from "@/features/messages/api";
+import { useQueryMessages } from "@/features/messages/api";
 import { Message as TMessage } from "@/schema/db";
 
 export function useMessage({
@@ -18,20 +18,13 @@ export function useMessage({
   type,
   has_response,
   question_id,
-  course_id,
 }: {
   id: TMessage["id"];
   role: TMessage["role"];
   type: TMessage["type"];
   has_response: TMessage["has_response"];
   question_id: TMessage["question_id"];
-  course_id: TMessage["course_id"];
 }) {
-  const { data, isPending } = useQueryQuestion({
-    question_id,
-    course_id,
-  });
-
   const user = useAtomValue(userAtom);
   const messageInputRef = useAtomValue(messageInputRefAtom);
   const setQuestionId = useSetAtom(questionAtom);
@@ -49,9 +42,7 @@ export function useMessage({
     (type === "Question" || type === "Request");
 
   return {
-    isPending,
     canAnswer,
-    data,
     isAnswer: !!question_id,
     hasAnswer: has_response,
     onClickHandler,
