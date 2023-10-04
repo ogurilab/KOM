@@ -93,10 +93,11 @@ export interface Database {
       };
       messages: {
         Row: {
-          content: string;
+          content: string | null;
           course_id: string;
           created_at: string;
           file_path: string | null;
+          has_response: boolean;
           id: number;
           profile_id: string;
           question_id: number | null;
@@ -105,10 +106,11 @@ export interface Database {
           updated_at: string;
         };
         Insert: {
-          content: string;
+          content?: string | null;
           course_id: string;
           created_at?: string;
           file_path?: string | null;
+          has_response?: boolean;
           id?: number;
           profile_id: string;
           question_id?: number | null;
@@ -117,10 +119,11 @@ export interface Database {
           updated_at?: string;
         };
         Update: {
-          content?: string;
+          content?: string | null;
           course_id?: string;
           created_at?: string;
           file_path?: string | null;
+          has_response?: boolean;
           id?: number;
           profile_id?: string;
           question_id?: number | null;

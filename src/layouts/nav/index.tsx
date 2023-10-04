@@ -39,17 +39,17 @@ export function Nav() {
         >
           ログアウト
         </button>
-        <nav className="flex flex-1 flex-col gap-y-8">
+        <div className="flex flex-1 flex-col gap-y-8">
           <p className="text-gay-900 border-b pb-2 font-semibold">講義</p>
-          <ul className="flex flex-1 flex-col gap-y-7">
-            <li>
+          <div className="flex flex-1 flex-col gap-y-7">
+            <div>
               <Suspense
                 fallback={<Loader variant="dots" className="mx-auto" />}
               >
                 <Courses />
               </Suspense>
-            </li>
-            <li className="-mx-6 mt-auto border-t pt-4">
+            </div>
+            <div className="-mx-6 mt-auto border-t pt-4">
               <button
                 onClick={onClickHandler}
                 type="button"
@@ -58,9 +58,9 @@ export function Nav() {
                 <PlusIcon className="h-6 w-6 text-gray-400 group-hover:text-gray-500" />
                 <span className="border-b px-2">登録</span>
               </button>
-            </li>
-          </ul>
-        </nav>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -168,19 +168,21 @@ function SplitCourses({
   index: number;
 }) {
   return (
-    <li>
+    <div>
       <div>
         <div className="flex w-full justify-between text-gray-900">
           <span className="leading-7">{weekItems[index]}</span>
           <span className="mr-6 flex h-7 items-center" />
         </div>
-        <ul className="mt-2">
-          {courses.map((course) => (
-            <Course key={course.id} course={course} />
-          ))}
-        </ul>
+        <nav>
+          <ul className="mt-2">
+            {courses.map((course) => (
+              <Course key={course.id} course={course} />
+            ))}
+          </ul>
+        </nav>
       </div>
-    </li>
+    </div>
   );
 }
 
@@ -200,7 +202,7 @@ export function Courses() {
     );
 
   return (
-    <ul className="grid gap-y-8">
+    <div className="grid gap-y-8">
       {hasData &&
         data?.map((courses, i) => {
           return courses.length > 0 ? (
@@ -208,6 +210,6 @@ export function Courses() {
             <SplitCourses key={`courses-${i}`} courses={courses} index={i} />
           ) : null;
         })}
-    </ul>
+    </div>
   );
 }
