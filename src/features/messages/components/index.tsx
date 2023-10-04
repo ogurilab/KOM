@@ -7,6 +7,7 @@ import { Image } from "@/components/image";
 import { Loader } from "@/components/loader";
 
 import { File, FileLoader } from "@/features/files/components";
+import { AnswerModal } from "@/features/messages/components/answer";
 import Question, {
   QuestionLoader,
 } from "@/features/messages/components/question";
@@ -26,7 +27,14 @@ const MemoMessage = memo(({ message }: { message: TMessage }) => {
     question_id,
   } = message;
 
-  const { onClickHandler, canAnswer, isAnswer, hasAnswer } = useMessage({
+  const {
+    onClickHandler,
+    canAnswer,
+    isAnswer,
+    hasAnswer,
+    answerModalIsOpen,
+    setAnswerModalIsOpen,
+  } = useMessage({
     id,
     role,
     type,
@@ -86,12 +94,25 @@ const MemoMessage = memo(({ message }: { message: TMessage }) => {
             {has_response ? "再度回答" : "回答する"}
           </button>
         ) : has_response ? (
-          <button
-            type="button"
-            className="text-xs font-semibold text-blue-600 hover:text-blue-500"
-          >
-            回答を見る
-          </button>
+          <>
+            <button
+              onClick={() => setAnswerModalIsOpen(true)}
+              type="button"
+              className="text-xs font-semibold text-blue-600 hover:text-blue-500"
+            >
+              回答を見る
+            </button>
+
+            <AnswerModal
+              course_id={course_id}
+              type={type}
+              content={content}
+              id={id}
+              key={id}
+              open={answerModalIsOpen}
+              onClose={() => setAnswerModalIsOpen(false)}
+            />
+          </>
         ) : null}
       </div>
     </div>

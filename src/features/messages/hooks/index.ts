@@ -1,6 +1,6 @@
 import { useAtomValue, useSetAtom } from "jotai";
 import { useRouter } from "next/router";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import {
   messageInputRefAtom,
@@ -30,6 +30,8 @@ export function useMessage({
   const setQuestionId = useSetAtom(questionAtom);
   const setCategory = useSetAtom(selectedCategoryAtom);
 
+  const [answerModalIsOpen, setAnswerModalIsOpen] = useState(false);
+
   const onClickHandler = () => {
     setQuestionId(id);
     messageInputRef?.current?.focus();
@@ -46,6 +48,8 @@ export function useMessage({
     isAnswer: !!question_id,
     hasAnswer: has_response,
     onClickHandler,
+    answerModalIsOpen,
+    setAnswerModalIsOpen,
   };
 }
 

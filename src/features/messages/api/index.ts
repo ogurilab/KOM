@@ -104,11 +104,10 @@ export function useQueryQuestion({
   course_id: string;
 }) {
   const queryClient = useQueryClient();
-  const isQAndA = useAtomValue(qAndAAtom);
 
   const question = question_id
     ? queryClient
-        .getQueryData<InfiniteMessages>(["messages", course_id, isQAndA])
+        .getQueryData<InfiniteMessages>(["messages", course_id, false])
         ?.pages.flat()
         .find((q) => q.id === question_id)
     : undefined;
@@ -127,7 +126,7 @@ export function useQueryQuestion({
       };
     },
     enabled,
-    staleTime: Infinity,
+    staleTime: 1000 * 60 * 30,
   });
 }
 
@@ -158,5 +157,56 @@ export function useQueryFile(file_path: string | null) {
     queryKey: ["file", file_path],
     queryFn: () => getFiles(file_path),
     enabled: !!file_path,
+  });
+}
+
+async function geAnswer({ id }: { id: number | null }) {
+  if (!id) return undefined;
+
+  const { data, error } = await supabase
+    .from("messages")
+    .select("id,content,type,created_at")
+    .eq("question_id", id)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+
+  return data;
+}
+
+export function useQueryAnswer({
+  id,
+  open,
+  course_id,
+}: {
+  id: number;
+  open: boolean;
+  course_id: string;
+}) {
+  const queryClient = useQueryClient();
+  const isQAndA = useAtomValue(qAndAAtom);
+
+  const placeholderAnswers = queryClient
+    .getQueryData<InfiniteMessages>(["messages", course_id, isQAndA])
+    ?.pages.flat()
+    .filter((q) => q.question_id === id);
+
+  const enabled = !!id && open;
+
+  return useQuery({
+    queryKey: ["answer", id],
+    queryFn: () => geAnswer({ id }),
+    enabled,
+    placeholderData: () => {
+      if (!placeholderAnswers) return undefined;
+
+      return placeholderAnswers.map((answer) => ({
+        id: answer.id,
+        content: answer.content ?? "",
+        type: answer.type,
+        created_at: answer.created_at,
+      }));
+    },
+    staleTime: 1000 * 60 * 30,
   });
 }
