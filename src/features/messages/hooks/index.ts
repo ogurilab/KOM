@@ -1,9 +1,57 @@
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useRouter } from "next/router";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { qAndAAtom } from "@/context";
+import {
+  messageInputRefAtom,
+  qAndAAtom,
+  questionAtom,
+  selectedCategoryAtom,
+  userAtom,
+} from "@/context";
 import { useQueryMessages } from "@/features/messages/api";
+import { Message as TMessage } from "@/schema/db";
+
+export function useMessage({
+  id,
+  role,
+  type,
+  has_response,
+  question_id,
+}: {
+  id: TMessage["id"];
+  role: TMessage["role"];
+  type: TMessage["type"];
+  has_response: TMessage["has_response"];
+  question_id: TMessage["question_id"];
+}) {
+  const user = useAtomValue(userAtom);
+  const messageInputRef = useAtomValue(messageInputRefAtom);
+  const setQuestionId = useSetAtom(questionAtom);
+  const setCategory = useSetAtom(selectedCategoryAtom);
+
+  const [answerModalIsOpen, setAnswerModalIsOpen] = useState(false);
+
+  const onClickHandler = () => {
+    setQuestionId(id);
+    messageInputRef?.current?.focus();
+    setCategory("Answer");
+  };
+
+  const canAnswer =
+    user?.profile?.role === "Teacher" &&
+    role === "Student" &&
+    (type === "Question" || type === "Request");
+
+  return {
+    canAnswer,
+    isAnswer: !!question_id,
+    hasAnswer: has_response,
+    onClickHandler,
+    answerModalIsOpen,
+    setAnswerModalIsOpen,
+  };
+}
 
 export function useMessages() {
   const { query } = useRouter();

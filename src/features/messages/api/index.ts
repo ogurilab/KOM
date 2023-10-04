@@ -4,7 +4,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
-import { userAtom } from "@/context";
+import { qAndAAtom, userAtom } from "@/context";
 import supabase from "@/lib/supabse";
 import { Categories, Message } from "@/schema/db";
 
@@ -12,6 +12,7 @@ type GetMessages = {
   slug: string;
   created_at: string;
   only_q_and_a: boolean;
+  role: "Teacher" | "Student";
 };
 
 type InfiniteMessages = {
@@ -33,24 +34,32 @@ async function getQuestion({ question_id }: { question_id: number | null }) {
   return data;
 }
 
-async function getMessages({ slug, created_at, only_q_and_a }: GetMessages) {
+async function getMessages({
+  slug,
+  created_at,
+  only_q_and_a,
+  role,
+}: GetMessages) {
+  const AllCategories = [
+    Categories.Question,
+    Categories.Others,
+    Categories.ChitChat,
+    Categories.Request,
+    Categories.Contact,
+    Categories.Answer,
+  ];
+
+  const filteredCategories =
+    role === "Teacher"
+      ? [Categories.Question, Categories.Request, Categories.Answer]
+      : [Categories.Answer];
+
   const { data } = await supabase
     .from("messages")
     .select("*,profile:profiles(*)")
     .eq("course_id", slug)
     .lt("created_at", created_at)
-    .in("type", [
-      Categories.Question,
-      ...(only_q_and_a
-        ? [Categories.Answer]
-        : [
-            Categories.Answer,
-            Categories.Others,
-            Categories.ChitChat,
-            Categories.Request,
-            Categories.Contact,
-          ]),
-    ])
+    .in("type", only_q_and_a ? filteredCategories : AllCategories)
     .order("created_at", { ascending: false })
     .limit(100);
 
@@ -63,7 +72,12 @@ export function useQueryMessages(slug: string, only_q_and_a: boolean) {
   return useInfiniteQuery({
     queryKey: ["messages", slug, only_q_and_a],
     queryFn: ({ pageParam }) =>
-      getMessages({ slug, created_at: pageParam, only_q_and_a }),
+      getMessages({
+        slug,
+        created_at: pageParam,
+        only_q_and_a,
+        role: user?.profile?.role ?? "Teacher",
+      }),
 
     getNextPageParam: (lastPage) => {
       if (!lastPage) return undefined;
@@ -93,7 +107,7 @@ export function useQueryQuestion({
 
   const question = question_id
     ? queryClient
-        .getQueryData<InfiniteMessages>(["messages", course_id])
+        .getQueryData<InfiniteMessages>(["messages", course_id, false])
         ?.pages.flat()
         .find((q) => q.id === question_id)
     : undefined;
@@ -112,8 +126,7 @@ export function useQueryQuestion({
       };
     },
     enabled,
-    gcTime: 0,
-    staleTime: Infinity,
+    staleTime: 1000 * 60 * 30,
   });
 }
 
@@ -144,5 +157,56 @@ export function useQueryFile(file_path: string | null) {
     queryKey: ["file", file_path],
     queryFn: () => getFiles(file_path),
     enabled: !!file_path,
+  });
+}
+
+async function geAnswer({ id }: { id: number | null }) {
+  if (!id) return undefined;
+
+  const { data, error } = await supabase
+    .from("messages")
+    .select("id,content,type,created_at")
+    .eq("question_id", id)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+
+  return data;
+}
+
+export function useQueryAnswer({
+  id,
+  open,
+  course_id,
+}: {
+  id: number;
+  open: boolean;
+  course_id: string;
+}) {
+  const queryClient = useQueryClient();
+  const isQAndA = useAtomValue(qAndAAtom);
+
+  const placeholderAnswers = queryClient
+    .getQueryData<InfiniteMessages>(["messages", course_id, isQAndA])
+    ?.pages.flat()
+    .filter((q) => q.question_id === id);
+
+  const enabled = !!id && open;
+
+  return useQuery({
+    queryKey: ["answer", id],
+    queryFn: () => geAnswer({ id }),
+    enabled,
+    placeholderData: () => {
+      if (!placeholderAnswers) return undefined;
+
+      return placeholderAnswers.map((answer) => ({
+        id: answer.id,
+        content: answer.content ?? "",
+        type: answer.type,
+        created_at: answer.created_at,
+      }));
+    },
+    staleTime: 1000 * 60 * 30,
   });
 }

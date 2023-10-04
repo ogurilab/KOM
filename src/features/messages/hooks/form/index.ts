@@ -63,12 +63,21 @@ const useMutateMessage = () => {
 
       if (!prevData) return;
 
-      const firstPage = prevData.pages[0];
-      const mergeData = [data, ...firstPage];
+      const isAnswer = data.question_id !== null;
 
-      const newPage = prevData.pages.map((page, index) => {
-        if (index === 0) return mergeData;
-        return page;
+      const newPage: Message[][] = prevData.pages.map((page, index) => {
+        if (index === 0 && !isAnswer) return [data, ...page];
+
+        const changedQuestionData: Message[] = page.map((message) => {
+          if (message.id !== data.question_id) return message;
+
+          return {
+            ...message,
+            has_response: true,
+          };
+        });
+
+        return [data, ...changedQuestionData];
       });
 
       queryClient.setQueryData<InfiniteMessages>(
@@ -126,12 +135,9 @@ export function useMessageForm() {
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (
-      (!value && !selectedFile?.file) ||
-      !user ||
-      typeof query.slug !== "string"
-    )
-      return;
+    if (!value && !selectedFile?.file) return;
+
+    if (!user || typeof query.slug !== "string") return;
 
     if (!user.profile?.role) return;
 

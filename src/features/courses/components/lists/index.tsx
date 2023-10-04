@@ -137,7 +137,6 @@ function Course({ course }: { course: TCourse }) {
           pathname: `/courses/${course?.id}`,
           query: { name: course?.name ?? "" },
         }}
-        as={`/courses/${course?.id}`}
         activeClassName="text-blue-600"
         className="group flex flex-1 items-center gap-x-3 rounded-md p-2 text-sm leading-6 text-gray-700 hover:bg-gray-100/30 hover:text-blue-600"
       >
@@ -168,19 +167,21 @@ function SplitCourses({
   index: number;
 }) {
   return (
-    <li>
+    <div>
       <div>
         <div className="flex w-full justify-between text-gray-900">
           <span className="leading-7">{weekItems[index]}</span>
           <span className="mr-6 flex h-7 items-center" />
         </div>
-        <ul className="mt-2">
-          {courses.map((course) => (
-            <Course key={course.id} course={course} />
-          ))}
-        </ul>
+        <nav>
+          <ul className="mt-2">
+            {courses.map((course) => (
+              <Course key={course.id} course={course} />
+            ))}
+          </ul>
+        </nav>
       </div>
-    </li>
+    </div>
   );
 }
 
@@ -200,7 +201,7 @@ export function Courses() {
     );
 
   return (
-    <ul className="grid gap-y-8">
+    <div className="grid gap-y-8">
       {hasData &&
         data?.map((courses, i) => {
           return courses.length > 0 ? (
@@ -208,6 +209,6 @@ export function Courses() {
             <SplitCourses key={`courses-${i}`} courses={courses} index={i} />
           ) : null;
         })}
-    </ul>
+    </div>
   );
 }

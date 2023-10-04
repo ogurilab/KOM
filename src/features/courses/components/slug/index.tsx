@@ -1,43 +1,55 @@
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import React, { Suspense } from "react";
 import { Loader } from "@/components/loader";
 import { Title } from "@/components/meta";
 import { Switch } from "@/components/switch";
-import { qAndAAtom } from "@/context";
+import { qAndAAtom, userAtom } from "@/context";
 import useCourse from "@/features/courses/hooks/slug";
 import { Messages } from "@/features/messages/components";
 import { MessageForm } from "@/features/messages/components/form";
 import Layout from "@/layouts";
 
 export function Course() {
-  const { data, isLoading } = useCourse();
+  const { name } = useCourse();
   const [isOpen, setIsOpen] = useAtom(qAndAAtom);
+  const user = useAtomValue(userAtom);
 
   return (
     <Layout
-      title={isLoading ? "Loading..." : data?.name}
+      title={name}
       side={
         <Switch
           enabled={isOpen}
           setEnabled={setIsOpen}
-          label="回答と質問のみ表示"
+          label={
+            user?.profile?.role === "Teacher" ? "Q&Aのみ表示" : "回答のみ表示"
+          }
         />
       }
     >
-      <Title title={data?.name} />
-      <div className="mb-[147px]">
-        <Suspense
-          fallback={
-            <Loader
-              theme="primary"
-              variant="dots"
-              size="xl"
-              className="mx-auto mt-40"
-            />
-          }
-        >
-          <Messages />
-        </Suspense>
+      <Title title={name} />
+      <div className="mb-32">
+        {user ? (
+          <Suspense
+            fallback={
+              <Loader
+                theme="primary"
+                variant="dots"
+                size="xl"
+                className="mx-auto mt-40"
+              />
+            }
+          >
+            <Messages />
+          </Suspense>
+        ) : (
+          <Loader
+            theme="primary"
+            variant="dots"
+            size="xl"
+            className="mx-auto mt-40"
+          />
+        )}
       </div>
       <MessageForm />
     </Layout>

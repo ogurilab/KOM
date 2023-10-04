@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { userAtom } from "@/context";
+import { qAndAAtom, userAtom } from "@/context";
 import supabase from "@/lib/supabse";
 import { Message } from "@/schema/db";
 
@@ -15,6 +15,7 @@ export function useMessageSubscriptions() {
   const user = useAtomValue(userAtom);
   const queryClient = useQueryClient();
   const { query } = useRouter();
+  const isQAndA = useAtomValue(qAndAAtom);
 
   useEffect(() => {
     if (!user) return () => {};
@@ -30,25 +31,39 @@ export function useMessageSubscriptions() {
           filter: `profile_id=neq.${user.profile?.id}`,
         },
         (payload) => {
+          const data = payload.new;
           const prevData = queryClient.getQueryData<InfiniteMessages>([
             "messages",
             query.slug,
+            isQAndA,
           ]);
 
           if (!prevData) return;
 
-          const firstPage = prevData.pages[0];
-          const mergeData = [payload.new, ...firstPage];
+          const isAnswer = data.question_id !== null;
 
-          const newPage = prevData.pages.map((page, index) => {
-            if (index === 0) return mergeData;
-            return page;
+          const newPage: Message[][] = prevData.pages.map((page, index) => {
+            if (index === 0 && !isAnswer) return [data, ...page];
+
+            const changedQuestionData: Message[] = page.map((message) => {
+              if (message.id !== data.question_id) return message;
+
+              return {
+                ...message,
+                has_response: true,
+              };
+            });
+
+            return [data, ...changedQuestionData];
           });
 
-          queryClient.setQueryData<InfiniteMessages>(["messages", query.slug], {
-            pageParams: prevData.pageParams,
-            pages: newPage,
-          });
+          queryClient.setQueryData<InfiniteMessages>(
+            ["messages", query.slug, isQAndA],
+            {
+              pageParams: prevData.pageParams,
+              pages: newPage,
+            }
+          );
         }
       )
       .subscribe();
@@ -56,5 +71,5 @@ export function useMessageSubscriptions() {
     return () => {
       messages.unsubscribe();
     };
-  }, [query.slug, queryClient, user]);
+  }, [isQAndA, query.slug, queryClient, user]);
 }
