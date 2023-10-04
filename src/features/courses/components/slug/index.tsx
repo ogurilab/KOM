@@ -10,12 +10,12 @@ import { MessageForm } from "@/features/messages/components/form";
 import Layout from "@/layouts";
 
 export function Course() {
-  const { data, isLoading } = useCourse();
+  const { name } = useCourse();
   const [isOpen, setIsOpen] = useAtom(qAndAAtom);
 
   return (
     <Layout
-      title={isLoading ? "Loading..." : data?.name}
+      title={name}
       side={
         <Switch
           enabled={isOpen}
@@ -24,7 +24,7 @@ export function Course() {
         />
       }
     >
-      <Title title={data?.name} />
+      <Title title={name} />
       <div className="mb-32">
         <Suspense
           fallback={

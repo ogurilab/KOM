@@ -137,7 +137,6 @@ function Course({ course }: { course: TCourse }) {
           pathname: `/courses/${course?.id}`,
           query: { name: course?.name ?? "" },
         }}
-        as={`/courses/${course?.id}`}
         activeClassName="text-blue-600"
         className="group flex flex-1 items-center gap-x-3 rounded-md p-2 text-sm leading-6 text-gray-700 hover:bg-gray-100/30 hover:text-blue-600"
       >

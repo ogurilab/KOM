@@ -1,12 +1,8 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { Course } from "@/features/courses/components/slug";
 
 function Page() {
-  return (
-    <Suspense>
-      <Course />
-    </Suspense>
-  );
+  return <Course />;
 }
 
 export default Page;

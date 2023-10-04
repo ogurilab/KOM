@@ -1,7 +1,7 @@
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import { useSetAtom } from "jotai";
 import dynamic from "next/dynamic";
-import { Fragment, Suspense } from "react";
+import { Fragment } from "react";
 
 import { Loader } from "@/components/loader";
 import { Pattern } from "@/components/pattern";
@@ -51,10 +51,8 @@ function Layout({ children, title, side }: Props) {
     <>
       <div>
         <Pattern />
-        <Suspense>
-          <DynamicNavTransition />
-          <DynamicNav />
-        </Suspense>
+        <DynamicNavTransition />
+        <DynamicNav />
         <div className="sticky top-0 z-10 flex items-center gap-x-6 bg-white px-4 py-4 shadow-sm sm:px-6 lg:ml-72">
           <button
             type="button"

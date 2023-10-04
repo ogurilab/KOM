@@ -1,155 +1,41 @@
-import {
-  ChevronDoubleDownIcon,
-  DocumentTextIcon,
-} from "@heroicons/react/24/solid";
+import { CheckBadgeIcon } from "@heroicons/react/24/solid";
 import clsx from "clsx";
-import { useAtomValue, useSetAtom } from "jotai";
 import React, { Suspense, memo } from "react";
 import { CategoryBadge } from "@/components/categoryBadge";
+import { DayIndicator, getIsDifferentDay } from "@/components/dayIndicator";
 import { Image } from "@/components/image";
 import { Loader } from "@/components/loader";
-import {
-  messageInputRefAtom,
-  questionAtom,
-  selectedCategoryAtom,
-  userAtom,
-} from "@/context";
-import { useQueryFile, useQueryQuestion } from "@/features/messages/api";
-import { useMessages } from "@/features/messages/hooks";
+
+import { File, FileLoader } from "@/features/files/components";
+import { useMessage, useMessages } from "@/features/messages/hooks";
 import { useMessageSubscriptions } from "@/features/messages/hooks/subscriptions";
 import { Message as TMessage } from "@/schema/db";
 
-function getIsDifferentDay(targetDate: Date, prevMessageDate?: Date) {
-  if (!prevMessageDate) return false;
-
-  return (
-    targetDate.getDate() !== prevMessageDate.getDate() ||
-    targetDate.getMonth() !== prevMessageDate.getMonth() ||
-    targetDate.getFullYear() !== prevMessageDate.getFullYear()
-  );
-}
-
-function FileLoader() {
-  return (
-    <div className="grid h-40 w-36 place-items-center rounded-md border border-gray-300 bg-white/50 p-2 ">
-      <Loader theme="primary" size="xl" />
-    </div>
-  );
-}
-
-function File({ path }: { path: string }) {
-  const { data, isPending } = useQueryFile(path);
-
-  if (isPending) {
-    return <FileLoader />;
-  }
-
-  return (
-    <div>
-      {data?.isImage ? (
-        <div className="rounded-md border">
-          <Image
-            isStyle={false}
-            src={data.url}
-            alt={data.url}
-            className="max-h-60 max-w-full rounded-md object-cover"
-          />
-        </div>
-      ) : (
-        <a
-          href={data?.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group flex items-center gap-x-2 text-sm"
-        >
-          <div className="grid h-12 w-12 place-items-center rounded-md bg-blue-600 p-2 group-hover:bg-blue-500">
-            <DocumentTextIcon
-              aria-hidden="true"
-              className="h-8 w-8 text-white"
-            />
-          </div>
-          <div className="grid gap-y-1 text-sm text-gray-600">
-            <span className="text-blue-600 hover:text-blue-500">
-              {data?.type.split("/")[1].toLocaleUpperCase()}
-            </span>
-            <span>{data?.size}</span>
-          </div>
-        </a>
-      )}
-    </div>
-  );
-}
-
-function DayIndicator({ date }: { date: Date }) {
-  const today = new Date();
-  const someDate = new Date(date); // dateは比較対象の日付
-
-  const isToday =
-    today.getDate() === someDate.getDate() &&
-    today.getMonth() === someDate.getMonth() &&
-    today.getFullYear() === someDate.getFullYear();
-
-  const isYesterday =
-    today.getDate() - 1 === someDate.getDate() &&
-    today.getMonth() === someDate.getMonth() &&
-    today.getFullYear() === someDate.getFullYear();
-
-  return (
-    <div className="relative my-4">
-      <div className="absolute inset-0 flex items-center" aria-hidden="true">
-        <div className="w-full border-t border-dashed border-gray-900" />
-      </div>
-      <div className="relative flex justify-center">
-        <div className="jus flex items-center gap-x-2 rounded-md bg-white px-4 py-1 ">
-          <time
-            dateTime={date.toISOString()}
-            className="text-xs font-semibold text-gray-900"
-          >
-            {/* eslint-disable-next-line no-nested-ternary */}
-            {isToday
-              ? "今日"
-              : isYesterday
-              ? "昨日"
-              : new Date(date).toLocaleDateString("ja-JP", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-          </time>
-          <ChevronDoubleDownIcon
-            aria-hidden="true"
-            className="h-4 w-4 text-gray-900"
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 const MemoMessage = memo(({ message }: { message: TMessage }) => {
-  const { data, isPending } = useQueryQuestion({
-    question_id: message.question_id,
-    course_id: message.course_id,
-  });
+  const {
+    content,
+    type,
+    file_path,
+    has_response,
+    role,
+    id,
+    course_id,
+    question_id,
+  } = message;
 
-  const user = useAtomValue(userAtom);
-  const canAnswer =
-    user?.profile?.role === "Teacher" && message.role === "Student";
-  const setQuestionId = useSetAtom(questionAtom);
-  const messageInputRef = useAtomValue(messageInputRefAtom);
-
-  const isAnswer = !!message.question_id;
-  const setCategory = useSetAtom(selectedCategoryAtom);
-
-  const onClickHandler = () => {
-    setQuestionId(message.id);
-    messageInputRef?.current?.focus();
-    setCategory("Answer");
-  };
+  const { data, isPending, onClickHandler, canAnswer, isAnswer, hasAnswer } =
+    useMessage({
+      id,
+      role,
+      type,
+      course_id,
+      question_id,
+      has_response,
+    });
 
   return (
     <div className="flex gap-x-2">
-      {message.role === "Teacher" && (
+      {role === "Teacher" && (
         <Image
           src="/teacher.png"
           className="h-10 w-10 rounded-full"
@@ -160,19 +46,23 @@ const MemoMessage = memo(({ message }: { message: TMessage }) => {
       <div
         className={clsx(
           "flex w-full flex-1 flex-col",
-          message?.role === "Student" ? "items-end pl-20" : "items-start pr-20"
+          role === "Student" ? "items-end pl-20" : "items-start pr-20"
         )}
       >
-        {message.type && (
+        {type && (
           <div>
-            <CategoryBadge category={message.type} />
+            <CategoryBadge category={type} />
+            {hasAnswer && (
+              <CheckBadgeIcon
+                className="ml-1 inline-block h-5 w-5 text-green-500"
+                aria-hidden="true"
+              />
+            )}
           </div>
         )}
 
         <div className="my-4 grid gap-y-2 px-1">
-          <p className="inline-block text-sm  md:text-base">
-            {message.content}
-          </p>
+          <p className="inline-block text-sm  md:text-base">{content}</p>
           {isAnswer && (
             <div className="rounded-md border-2 bg-white/80 p-2  outline outline-gray-300">
               {isPending ? (
@@ -191,21 +81,30 @@ const MemoMessage = memo(({ message }: { message: TMessage }) => {
               )}
             </div>
           )}
-          {message.file_path && (
+
+          {file_path && (
             <Suspense fallback={<FileLoader />}>
-              <File path={message.file_path} />
+              <File path={file_path} />
             </Suspense>
           )}
         </div>
-        {canAnswer && (
+        {/* eslint-disable-next-line no-nested-ternary */}
+        {canAnswer ? (
           <button
             type="button"
             onClick={onClickHandler}
-            className="text-sm text-blue-600 hover:text-blue-500 "
+            className="text-xs font-semibold text-blue-600 hover:text-blue-500"
           >
-            回答する
+            {has_response ? "再度回答" : "回答する"}
           </button>
-        )}
+        ) : has_response ? (
+          <button
+            type="button"
+            className="text-xs font-semibold text-blue-600 hover:text-blue-500"
+          >
+            回答を見る
+          </button>
+        ) : null}
       </div>
     </div>
   );
