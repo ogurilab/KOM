@@ -29,7 +29,7 @@ export default function Question({
   }
 
   return (
-    <div className="w-max rounded-md border-2 bg-white/80  p-2 outline outline-gray-300">
+    <div className="max-w-max rounded-md border-2 bg-white/80  p-2 outline outline-gray-300">
       {data?.type && (
         <div className="mb-1">
           <CategoryBadge category={data.type} />
