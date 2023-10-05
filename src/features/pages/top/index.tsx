@@ -16,7 +16,7 @@ const DynamicRegister = dynamic(
 export function Top() {
   return (
     <Layout title="Home">
-      <Title />
+      <Title title="Home" />
       <h2 className="text-center text-3xl font-bold text-gray-900">
         <span>Welcome to</span>
         <span className="text-blue-600"> SiLec</span>
