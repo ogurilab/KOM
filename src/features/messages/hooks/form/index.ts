@@ -202,5 +202,6 @@ export function useMessageForm() {
     onDeleteHandler,
     isPendingPreview,
     onFocusHandler,
+    isAuthLoading: !user,
   };
 }

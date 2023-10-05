@@ -57,19 +57,26 @@ export function Nav() {
             <button
               onClick={onClickHandler}
               type="button"
+              disabled={!user}
               className="group sticky bottom-0 -mx-6 mt-auto border-t bg-white px-4 py-4"
             >
               <div className="relative flex w-full justify-center">
                 <DocumentPlusIcon className="absolute left-2 h-6 w-6 text-blue-600 group-hover:text-blue-500 " />
                 <span className="px-2 font-semibold text-blue-600 group-hover:text-blue-500">
-                  講義を{user?.profile?.role === "Student" ? "登録" : "作成"}
+                  {user
+                    ? `講義を${
+                        user?.profile?.role === "Student" ? "登録" : "作成"
+                      }`
+                    : "認証中..."}
                 </span>
               </div>
             </button>
             <div className="-mt-6 flex items-end justify-between pb-4">
               <span className="text-sm font-semibold">
-                {user?.profile?.role === "Student" ? "学生" : "教員"}
-                でログイン中
+                {user
+                  ? `${user?.profile?.role === "Student" ? "学生" : "教員"}
+                  でログイン中`
+                  : "認証中..."}
               </span>
               <button
                 type="button"
