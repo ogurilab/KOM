@@ -15,17 +15,13 @@ function ImageZoom({
   onClose: () => void;
 }) {
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      className="max-w-[80%] overflow-hidden"
-    >
+    <Modal open={open} onClose={onClose} className="max-w-xl sm:max-w-2xl">
       <Modal.Description as="div" className="flex">
         <Image
           src={src}
           alt={src}
           isStyle={false}
-          className="rounded-md border object-cover"
+          className="w-max rounded-md border object-cover"
         />
       </Modal.Description>
     </Modal>
