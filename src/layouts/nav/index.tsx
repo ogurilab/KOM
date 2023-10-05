@@ -32,9 +32,15 @@ export function Nav() {
   return (
     <div className="hidden lg:fixed lg:inset-y-0 lg:z-20 lg:flex lg:w-72 lg:flex-col">
       <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pt-4">
-        <Link href="/" className="flex shrink-0 items-center">
+        <Link
+          href="/"
+          className="flex shrink-0 items-center text-3xl font-black sm:text-4xl"
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className="w-16" src="/logo.png" alt="SiLec" />
+          <span className="inline-block flex-1 bg-gradient-to-r from-blue-600 to-pink-500 bg-clip-text text-center text-transparent">
+            SiLec
+          </span>
         </Link>
 
         <div className="flex flex-1 flex-col gap-y-8">
@@ -132,7 +138,7 @@ export function NavInTransition() {
             leaveFrom="translate-x-0"
             leaveTo="-translate-x-full"
           >
-            <Dialog.Panel className="relative mr-16 flex w-full max-w-xs flex-1">
+            <Dialog.Panel className="relative mr-16  flex w-full max-w-xs flex-1">
               <Transition.Child
                 as={Fragment}
                 enter="ease-in-out duration-300"
@@ -157,25 +163,26 @@ export function NavInTransition() {
                 </div>
               </Transition.Child>
               {/* Sidebar component, swap this element with another sidebar if you like */}
-              <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6">
-                <Link href="/" className="flex shrink-0 items-center">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img className="w-24" src="/logo.png" alt="SiLec" />
-                </Link>
-                <button
-                  type="button"
-                  className="mx-auto flex w-max justify-center gap-8 rounded-md bg-red-600 px-2 py-2 text-xs text-white"
-                  onClick={signOut}
+              <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pt-4">
+                <Link
+                  href="/"
+                  className="flex shrink-0 items-center text-3xl font-black sm:text-4xl"
                 >
-                  ログアウト
-                </button>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img className="w-16" src="/logo.png" alt="SiLec" />
+                  <span className="inline-block flex-1 bg-gradient-to-r from-blue-600 to-pink-500 bg-clip-text text-center text-transparent">
+                    SiLec
+                  </span>
+                </Link>
                 <nav className="flex flex-1 flex-col gap-y-8">
                   <p className="text-gay-900 border-b pb-2 font-semibold">
                     講義
                   </p>
                   <ul className="flex flex-1 flex-col gap-y-7">
                     <li>
-                      <Suspense>
+                      <Suspense
+                        fallback={<Loader variant="dots" className="mx-auto" />}
+                      >
                         <Courses />
                       </Suspense>
                     </li>
@@ -185,7 +192,7 @@ export function NavInTransition() {
                       className="sticky bottom-0 -mx-6 mt-auto border-t bg-white px-4 py-4"
                     >
                       <div className="relative flex w-full justify-center">
-                        <DocumentPlusIcon className="absolute left-0 h-6 w-6 text-blue-600 group-hover:text-gray-900" />
+                        <DocumentPlusIcon className="absolute left-1 h-6 w-6 text-blue-600 group-hover:text-gray-900" />
                         <span className="px-2 font-semibold text-blue-600">
                           講義を
                           {user?.profile?.role === "Student" ? "登録" : "作成"}
