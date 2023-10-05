@@ -21,12 +21,12 @@ export function File({ path }: { path: string }) {
   return (
     <div>
       {data?.isImage ? (
-        <div className="rounded-md border">
+        <div className=" rounded-md">
           <Image
             isStyle={false}
             src={data.url}
             alt={data.url}
-            className="max-h-60 max-w-full rounded-md object-cover"
+            className="max-h-60 w-full max-w-full rounded-md border object-cover"
           />
         </div>
       ) : (
