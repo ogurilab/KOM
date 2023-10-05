@@ -145,103 +145,104 @@ export function MessageForm() {
   return (
     <form
       onSubmit={onSubmitHandler}
-      className="fixed bottom-0 right-0 z-10 w-full  lg:pl-72"
+      className="fixed bottom-0  right-0 z-10 w-full  lg:pl-72"
     >
-      <div className="flex flex-col items-center justify-center border-t bg-white p-4 ">
-        <div className="mb-4 flex  w-full justify-between px-2.5">
-          {!isAuthLoading &&
-            Object.values(Categories).map((category) => {
-              if (category === "Answer" && role === "Student") return null;
-              if (
-                role === "Teacher" &&
-                (category === "Request" || category === "Question")
-              )
-                return null;
-
-              return (
+      <div className="border-t bg-white p-4 ">
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-center">
+          <div className="mb-4 flex  w-full justify-between px-2.5">
+            {!isAuthLoading &&
+              Object.values(Categories).map((category) => {
+                if (category === "Answer" && role === "Student") return null;
+                if (
+                  role === "Teacher" &&
+                  (category === "Request" || category === "Question")
+                )
+                  return null;
+                return (
+                  <button
+                    type="button"
+                    key={category}
+                    onClick={() => setSelectCategory(category)}
+                    className={clsx(
+                      "flex cursor-pointer items-center justify-center rounded-md  text-xs font-medium",
+                      selectCategory === category
+                        ? `${BorderColors[category]} border-2`
+                        : ""
+                    )}
+                  >
+                    <CategoryBadge category={category} />
+                  </button>
+                );
+              })}
+          </div>
+          <div className="flex w-full max-w-lg flex-1 gap-x-4">
+            <div className="h-max w-full">
+              {selectedFile && (
+                <FilePreview
+                  onDeleteHandler={onDeleteHandler}
+                  isPending={isPendingPreview}
+                  selectCategory={selectCategory}
+                  selectedFile={selectedFile}
+                />
+              )}
+              <div className="relative">
                 <button
+                  onClick={onClickFileHandler}
                   type="button"
-                  key={category}
-                  onClick={() => setSelectCategory(category)}
+                  aria-label="ファイルを添付"
                   className={clsx(
-                    "flex cursor-pointer items-center justify-center rounded-md  text-xs font-medium",
-                    selectCategory === category
-                      ? `${BorderColors[category]} border-2`
-                      : ""
+                    "absolute left-2  top-3 h-5 w-5 rounded-full",
+                    SubmitColor[selectCategory]
                   )}
                 >
-                  <CategoryBadge category={category} />
+                  <input
+                    aria-label="ファイルを添付"
+                    accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.tsv,.rtf,.pages,.key,.numbers"
+                    onChange={onFileChangeHandler}
+                    ref={fileRef}
+                    type="file"
+                    className="sr-only"
+                  />
+                  <PlusIcon className="h-5 w-5 text-white" />
                 </button>
-              );
-            })}
-        </div>
-        <div className="flex w-full max-w-lg flex-1 gap-x-4">
-          <div className="h-max w-full">
-            {selectedFile && (
-              <FilePreview
-                onDeleteHandler={onDeleteHandler}
-                isPending={isPendingPreview}
-                selectCategory={selectCategory}
-                selectedFile={selectedFile}
-              />
-            )}
-            <div className="relative">
-              <button
-                onClick={onClickFileHandler}
-                type="button"
-                aria-label="ファイルを添付"
-                className={clsx(
-                  "absolute left-2  top-3 h-5 w-5 rounded-full",
-                  SubmitColor[selectCategory]
-                )}
-              >
-                <input
-                  aria-label="ファイルを添付"
-                  accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.tsv,.rtf,.pages,.key,.numbers"
-                  onChange={onFileChangeHandler}
-                  ref={fileRef}
-                  type="file"
-                  className="sr-only"
+                <TextareaAutosize
+                  onFocus={onFocusHandler}
+                  ref={ref}
+                  aria-label="コメントを入力"
+                  className={clsx(
+                    "w-full resize-none appearance-none  px-4 py-2 pl-10 placeholder:pt-1 placeholder:text-xs disabled:border-red-500 disabled:bg-white disabled:opacity-50  disabled:ring-red-500",
+                    BorderColors[selectCategory],
+                    selectedFile
+                      ? "rounded-md rounded-t-none border border-t-0 focus:ring-0"
+                      : "rounded-md border"
+                  )}
+                  maxRows={4}
+                  onChange={(e) => setValue(e.currentTarget.value)}
+                  value={value}
+                  onBlur={onBlurHandler}
+                  placeholder={questionId ? "回答を入力" : "コメントを入力"}
                 />
-                <PlusIcon className="h-5 w-5 text-white" />
-              </button>
-              <TextareaAutosize
-                onFocus={onFocusHandler}
-                ref={ref}
-                aria-label="コメントを入力"
-                className={clsx(
-                  "w-full resize-none appearance-none  px-4 py-2 pl-10 placeholder:pt-1 placeholder:text-xs disabled:border-red-500 disabled:bg-white disabled:opacity-50  disabled:ring-red-500",
-                  BorderColors[selectCategory],
-                  selectedFile
-                    ? "rounded-md rounded-t-none border border-t-0 focus:ring-0"
-                    : "rounded-md border"
-                )}
-                maxRows={4}
-                onChange={(e) => setValue(e.currentTarget.value)}
-                value={value}
-                onBlur={onBlurHandler}
-                placeholder={questionId ? "回答を入力" : "コメントを入力"}
-              />
+              </div>
             </div>
+            <button
+              aria-label={isPending ? "送信中" : "送信"}
+              type="submit"
+              disabled={isPending}
+              className={clsx(
+                "grid h-10 w-10 place-items-center rounded-full p-2  focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50",
+                SubmitColor[selectCategory]
+              )}
+            >
+              <PaperAirplaneIcon
+                aria-hidden="true"
+                className="h-6 w-6 text-white"
+              />
+            </button>
           </div>
-          <button
-            aria-label={isPending ? "送信中" : "送信"}
-            type="submit"
-            disabled={isPending}
-            className={clsx(
-              "grid h-10 w-10 place-items-center rounded-full p-2  focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50",
-              SubmitColor[selectCategory]
-            )}
-          >
-            <PaperAirplaneIcon
-              aria-hidden="true"
-              className="h-6 w-6 text-white"
-            />
-          </button>
+          <p className="mt-4 hidden text-gray-600 sm:block">
+            ルールを守って投稿してください。
+          </p>
         </div>
-        <p className="mt-4 hidden text-gray-600 sm:block">
-          ルールを守って投稿してください。
-        </p>
       </div>
     </form>
   );
