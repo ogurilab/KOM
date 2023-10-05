@@ -138,6 +138,7 @@ export function MessageForm() {
     selectedFile,
     onDeleteHandler,
     isPendingPreview,
+    onFocusHandler,
   } = useMessageForm();
 
   return (
@@ -149,6 +150,11 @@ export function MessageForm() {
         <div className="mb-4 flex  w-full justify-between px-2.5">
           {Object.values(Categories).map((category) => {
             if (category === "Answer" && role === "Student") return null;
+            if (
+              (role === "Teacher" && category === "Request") ||
+              category === "Question"
+            )
+              return null;
 
             return (
               <button
@@ -198,6 +204,7 @@ export function MessageForm() {
                 <PlusIcon className="h-5 w-5 text-white" />
               </button>
               <TextareaAutosize
+                onFocus={onFocusHandler}
                 ref={ref}
                 aria-label="コメントを入力"
                 className={clsx(

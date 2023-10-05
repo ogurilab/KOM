@@ -93,6 +93,7 @@ const useMutateMessage = () => {
 
 export function useMessageForm() {
   const [selectCategory, setSelectCategory] = useAtom(selectedCategoryAtom);
+  const prevCategory = useRef<MessageType | null>(null);
 
   const [value, setValue] = useState("");
   const user = useAtomValue(userAtom);
@@ -128,8 +129,12 @@ export function useMessageForm() {
 
     if (questionId && !value && !isSelectedFileButton && !selectedFile) {
       setQuestionId(null);
-      setSelectCategory(Categories.Others);
+      setSelectCategory(prevCategory.current ?? Categories.Others);
     }
+  };
+
+  const onFocusHandler = () => {
+    prevCategory.current = selectCategory;
   };
 
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -196,5 +201,6 @@ export function useMessageForm() {
     selectedFile,
     onDeleteHandler,
     isPendingPreview,
+    onFocusHandler,
   };
 }
