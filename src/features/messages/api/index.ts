@@ -25,7 +25,7 @@ async function getQuestion({ question_id }: { question_id: number | null }) {
 
   const { data, error } = await supabase
     .from("messages")
-    .select("id,content,type")
+    .select("id,content,type,file_path")
     .eq("id", question_id)
     .single();
 
@@ -123,6 +123,7 @@ export function useQueryQuestion({
         id: question_id,
         content: question.content ?? "",
         type: question.type,
+        file_path: question.file_path,
       };
     },
     enabled,
@@ -130,37 +131,7 @@ export function useQueryQuestion({
   });
 }
 
-async function getFiles(file_path: string | null) {
-  if (!file_path) return undefined;
-
-  const { data, error } = await supabase.storage
-    .from("files")
-    .download(file_path);
-
-  if (error) throw error;
-
-  if (!data) return undefined;
-
-  const isImage = data.type.startsWith("image");
-  const sizeText = data.size > 1024 * 1024 ? "MB" : "KB";
-
-  return {
-    url: URL.createObjectURL(data),
-    isImage,
-    type: data.type,
-    size: `${(data.size / 1024 / 1024).toFixed(2)} ${sizeText}`,
-  };
-}
-
-export function useQueryFile(file_path: string | null) {
-  return useQuery({
-    queryKey: ["file", file_path],
-    queryFn: () => getFiles(file_path),
-    enabled: !!file_path,
-  });
-}
-
-async function geAnswer({ id }: { id: number | null }) {
+async function getAnswer({ id }: { id: number | null }) {
   if (!id) return undefined;
 
   const { data, error } = await supabase
@@ -195,7 +166,7 @@ export function useQueryAnswer({
 
   return useQuery({
     queryKey: ["answer", id],
-    queryFn: () => geAnswer({ id }),
+    queryFn: () => getAnswer({ id }),
     enabled,
     placeholderData: () => {
       if (!placeholderAnswers) return undefined;

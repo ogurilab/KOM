@@ -1,6 +1,7 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { CategoryBadge } from "@/components/categoryBadge";
 import { Loader } from "@/components/loader";
+import { File, FileLoader } from "@/features/files/components";
 import { useQueryQuestion } from "@/features/messages/api";
 import { Message as TMessage } from "@/schema/db";
 
@@ -36,6 +37,13 @@ export default function Question({
         </div>
       )}
       <p className="text-sm">{data?.content}</p>
+      {data?.file_path && (
+        <Suspense fallback={<FileLoader />}>
+          <div className="mt-4">
+            <File path={data?.file_path} />
+          </div>
+        </Suspense>
+      )}
     </div>
   );
 }

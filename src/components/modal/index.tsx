@@ -6,9 +6,10 @@ type ModalProps = {
   children: React.ReactNode;
   open: boolean;
   onClose: () => void;
+  className?: string;
 };
 
-export function Modal({ children, open, onClose }: ModalProps) {
+export function Modal({ children, open, onClose, className }: ModalProps) {
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-20" onClose={onClose}>
@@ -35,7 +36,12 @@ export function Modal({ children, open, onClose }: ModalProps) {
               leaveFrom="opacity-100  scale-100"
               leaveTo="opacity-0  scale-95"
             >
-              <Dialog.Panel className="relative my-8 w-full max-w-sm transform  overflow-hidden rounded-lg bg-white p-6 text-left shadow-xl transition-all">
+              <Dialog.Panel
+                className={cn(
+                  "relative my-8 w-full max-w-sm transform  overflow-hidden rounded-lg bg-white p-6 text-left shadow-xl transition-all",
+                  className
+                )}
+              >
                 {children}
               </Dialog.Panel>
             </Transition.Child>

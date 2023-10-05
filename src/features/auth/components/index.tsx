@@ -109,7 +109,7 @@ function AuthForm() {
             onClick={() => setIsRegister(!isRegister)}
             className="font-semibold text-blue-600 hover:text-blue-500"
           >
-            {isRegister ? "ログインはこちら" : "新規登録はこちら"}はこちら
+            {isRegister ? "ログイン" : "新規登録"}はこちら
           </button>
         </div>
       </div>
