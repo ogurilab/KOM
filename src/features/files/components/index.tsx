@@ -1,7 +1,36 @@
 import { DocumentTextIcon } from "@heroicons/react/24/solid";
+import { useState } from "react";
 import { Image } from "@/components/image";
 import { Loader } from "@/components/loader";
-import { useQueryFile } from "@/features/messages/api";
+import { Modal } from "@/components/modal";
+import { useQueryFile } from "@/features/files/api";
+
+function ImageZoom({
+  src,
+  open,
+  onClose,
+}: {
+  src: string;
+  open: boolean;
+  onClose: () => void;
+}) {
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      className="max-w-[80%] overflow-hidden"
+    >
+      <Modal.Description as="div" className="flex">
+        <Image
+          src={src}
+          alt={src}
+          isStyle={false}
+          className="rounded-md border object-cover"
+        />
+      </Modal.Description>
+    </Modal>
+  );
+}
 
 export function FileLoader() {
   return (
@@ -12,6 +41,7 @@ export function FileLoader() {
 }
 
 export function File({ path }: { path: string }) {
+  const [open, setOpen] = useState(false);
   const { data, isPending } = useQueryFile(path);
 
   if (isPending) {
@@ -21,14 +51,25 @@ export function File({ path }: { path: string }) {
   return (
     <div>
       {data?.isImage ? (
-        <div className=" rounded-md">
-          <Image
-            isStyle={false}
+        <>
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="block w-full rounded-md"
+          >
+            <Image
+              isStyle={false}
+              src={data.url}
+              alt={data.url}
+              className="max-h-60 w-full max-w-full rounded-md border object-cover"
+            />
+          </button>
+          <ImageZoom
             src={data.url}
-            alt={data.url}
-            className="max-h-60 w-full max-w-full rounded-md border object-cover"
+            open={open}
+            onClose={() => setOpen(false)}
           />
-        </div>
+        </>
       ) : (
         <a
           href={data?.url}
