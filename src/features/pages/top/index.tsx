@@ -45,23 +45,33 @@ export function Top() {
       </p>
 
       <div className="mt-32">
-        <h3 className="text-center text-xl font-bold text-gray-900">
-          講義を{user?.profile?.role === "Student" ? "登録" : "作成"}
-          してみましょう！
-        </h3>
-
-        <div
-          className={clsx(
-            "mt-10",
-            user?.profile?.role === "Student" ? "mx-auto max-w-sm" : ""
-          )}
-        >
-          {user?.profile?.role === "Student" ? (
-            <DynamicRegister />
-          ) : (
-            <DynamicCreateCourse />
-          )}
-        </div>
+        {user ? (
+          <>
+            {" "}
+            <h3 className="text-center text-xl font-bold text-gray-900">
+              講義を{user?.profile?.role === "Student" ? "登録" : "作成"}
+              してみましょう！
+            </h3>
+            <div
+              className={clsx(
+                "mt-10",
+                user?.profile?.role === "Student" ? "mx-auto max-w-sm" : ""
+              )}
+            >
+              {user?.profile?.role === "Student" ? (
+                <DynamicRegister />
+              ) : (
+                <DynamicCreateCourse />
+              )}
+            </div>
+          </>
+        ) : (
+          <div>
+            <h3 className="text-center text-xl font-bold text-gray-900">
+              まもなく認証が完了します...
+            </h3>
+          </div>
+        )}
       </div>
     </Layout>
   );

@@ -139,6 +139,7 @@ export function MessageForm() {
     onDeleteHandler,
     isPendingPreview,
     onFocusHandler,
+    isAuthLoading,
   } = useMessageForm();
 
   return (
@@ -148,30 +149,31 @@ export function MessageForm() {
     >
       <div className="flex flex-col items-center justify-center border-t bg-white p-4 ">
         <div className="mb-4 flex  w-full justify-between px-2.5">
-          {Object.values(Categories).map((category) => {
-            if (category === "Answer" && role === "Student") return null;
-            if (
-              (role === "Teacher" && category === "Request") ||
-              category === "Question"
-            )
-              return null;
+          {!isAuthLoading &&
+            Object.values(Categories).map((category) => {
+              if (category === "Answer" && role === "Student") return null;
+              if (
+                role === "Teacher" &&
+                (category === "Request" || category === "Question")
+              )
+                return null;
 
-            return (
-              <button
-                type="button"
-                key={category}
-                onClick={() => setSelectCategory(category)}
-                className={clsx(
-                  "flex cursor-pointer items-center justify-center rounded-md  text-xs font-medium",
-                  selectCategory === category
-                    ? `${BorderColors[category]} border-2`
-                    : ""
-                )}
-              >
-                <CategoryBadge category={category} />
-              </button>
-            );
-          })}
+              return (
+                <button
+                  type="button"
+                  key={category}
+                  onClick={() => setSelectCategory(category)}
+                  className={clsx(
+                    "flex cursor-pointer items-center justify-center rounded-md  text-xs font-medium",
+                    selectCategory === category
+                      ? `${BorderColors[category]} border-2`
+                      : ""
+                  )}
+                >
+                  <CategoryBadge category={category} />
+                </button>
+              );
+            })}
         </div>
         <div className="flex w-full max-w-lg flex-1 gap-x-4">
           <div className="h-max w-full">
