@@ -1,5 +1,7 @@
-import { Menu, Transition } from "@headlessui/react";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
 import {
+  ChevronDownIcon,
+  ChevronLeftIcon,
   DocumentDuplicateIcon,
   EllipsisVerticalIcon,
   TrashIcon,
@@ -35,6 +37,10 @@ function CourseMenu({ id, class_code }: { id: string; class_code: string }) {
 
   const onCopyHandler = () => {
     navigator.clipboard.writeText(class_code);
+    onNotification({
+      type: "success",
+      title: "IDをコピーしました",
+    });
   };
 
   const onCompleteHandler = async () => {
@@ -54,8 +60,8 @@ function CourseMenu({ id, class_code }: { id: string; class_code: string }) {
   return (
     <>
       <Menu as="div" className="relative flex-none">
-        <Menu.Button className="block p-2 text-gray-500 hover:text-gray-900">
-          <span className="sr-only">Open options</span>
+        <Menu.Button className="block py-1 text-gray-500 hover:text-gray-900">
+          <span className="sr-only">設定を開く</span>
           <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" />
         </Menu.Button>
         <Transition
@@ -130,29 +136,17 @@ function CourseMenu({ id, class_code }: { id: string; class_code: string }) {
 function Course({ course }: { course: TCourse }) {
   const setIsNavOpen = useSetAtom(navAtom);
   return (
-    <li key={course?.name} className="flex">
+    <li key={course?.name} className="flex justify-between">
       <ActiveLink
         onTransitionComplete={() => setIsNavOpen(false)}
         href={{
           pathname: `/courses/${course?.id}`,
           query: { name: course?.name ?? "" },
         }}
-        activeClassName="text-blue-600"
-        className="group flex flex-1 items-center gap-x-3 rounded-md p-2 text-sm leading-6 text-gray-700 hover:bg-gray-100/30 hover:text-blue-600"
+        activeClassName="text-blue-600 font-bold"
+        className="group -mx-2 mr-4 flex flex-1 items-center rounded-md px-2 text-sm leading-6 text-gray-600 hover:bg-blue-50 hover:text-blue-600"
       >
-        {({ isActive }) => (
-          <>
-            <span
-              className={clsx(
-                "border-y-8 border-l-[14px] border-solid border-y-transparent border-l-gray-900 ",
-                isActive
-                  ? "border-l-blue-600"
-                  : "border-l-gray-900 group-hover:border-l-gray-600"
-              )}
-            />
-            <span>{course?.name}</span>
-          </>
-        )}
+        <span className="flex-1">{course?.name}</span>
       </ActiveLink>
       <CourseMenu id={course?.id} class_code={course?.class_code} />
     </li>
@@ -167,21 +161,37 @@ function SplitCourses({
   index: number;
 }) {
   return (
-    <div>
-      <div>
-        <div className="flex w-full justify-between text-gray-900">
-          <span className="leading-7">{weekItems[index]}</span>
-          <span className="mr-6 flex h-7 items-center" />
-        </div>
-        <nav>
-          <ul className="mt-2">
-            {courses.map((course) => (
-              <Course key={course.id} course={course} />
-            ))}
-          </ul>
-        </nav>
-      </div>
-    </div>
+    <Disclosure defaultOpen as="div">
+      {({ open }) => (
+        <>
+          <dt>
+            <Disclosure.Button className="flex w-full justify-between text-gray-900">
+              <span
+                className={clsx(
+                  new Date().getDay() === index ? "font-semibold" : ""
+                )}
+              >
+                {weekItems[index]}
+              </span>
+              <span className="flex h-7 items-center">
+                {open ? (
+                  <ChevronDownIcon className="h-4 w-4" aria-hidden="true" />
+                ) : (
+                  <ChevronLeftIcon className="h-4 w-4" aria-hidden="true" />
+                )}
+              </span>
+            </Disclosure.Button>
+          </dt>
+          <Disclosure.Panel as="dd">
+            <ul className="mt-3 space-y-3">
+              {courses.map((course) => (
+                <Course key={course.id} course={course} />
+              ))}
+            </ul>
+          </Disclosure.Panel>
+        </>
+      )}
+    </Disclosure>
   );
 }
 
@@ -201,7 +211,7 @@ export function Courses() {
     );
 
   return (
-    <div className="grid gap-y-8">
+    <dl className="grid gap-y-8">
       {hasData &&
         data?.map((courses, i) => {
           return courses.length > 0 ? (
@@ -209,6 +219,6 @@ export function Courses() {
             <SplitCourses key={`courses-${i}`} courses={courses} index={i} />
           ) : null;
         })}
-    </div>
+    </dl>
   );
 }

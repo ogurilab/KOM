@@ -38,11 +38,15 @@ const defaultState: NotificationState = {
 
 const notificationAtom = atom<Notification>(defaultState);
 const onHideAtom = atom(null, (get, set) => {
-  const { timer } = get(notificationAtom);
+  const { timer, ...args } = get(notificationAtom);
   if (timer) {
     clearTimeout(timer);
   }
-  set(notificationAtom, { ...defaultState });
+  set(notificationAtom, {
+    ...args,
+    timer: null,
+    isShown: false,
+  });
 });
 export const showNotificationAtom = atom(
   null,

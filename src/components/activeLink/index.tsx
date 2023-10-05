@@ -23,7 +23,9 @@ export const ActiveLink = ({
   const router = useRouter();
 
   const isActive =
-    router.asPath === (typeof href === "object" ? href.pathname : href);
+    typeof href === "string"
+      ? href.startsWith(router.pathname)
+      : router.asPath.startsWith(href?.pathname ?? "");
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function

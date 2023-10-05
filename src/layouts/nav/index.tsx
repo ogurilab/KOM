@@ -1,5 +1,9 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowLeftOnRectangleIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
+import { DocumentPlusIcon } from "@heroicons/react/24/solid";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -27,18 +31,12 @@ export function Nav() {
 
   return (
     <div className="hidden lg:fixed lg:inset-y-0 lg:z-20 lg:flex lg:w-72 lg:flex-col">
-      <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white/60 px-6 py-4">
+      <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pt-4">
         <Link href="/" className="flex shrink-0 items-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="w-24" src="/logo.png" alt="SiLec" />
+          <img className="w-16" src="/logo.png" alt="SiLec" />
         </Link>
-        <button
-          type="button"
-          className="mx-auto flex w-max justify-center gap-8 rounded-md bg-red-600 px-2 py-2 text-xs text-white"
-          onClick={signOut}
-        >
-          ログアウト
-        </button>
+
         <div className="flex flex-1 flex-col gap-y-8">
           <p className="text-gay-900 border-b pb-2 font-semibold">講義</p>
           <div className="flex flex-1 flex-col gap-y-7">
@@ -49,14 +47,34 @@ export function Nav() {
                 <Courses />
               </Suspense>
             </div>
-            <div className="-mx-6 mt-auto border-t pt-4">
+
+            <button
+              onClick={onClickHandler}
+              type="button"
+              className="group sticky bottom-0 -mx-6 mt-auto border-t bg-white px-4 py-4"
+            >
+              <div className="relative flex w-full justify-center">
+                <DocumentPlusIcon className="absolute left-2 h-6 w-6 text-blue-600 group-hover:text-blue-500 " />
+                <span className="px-2 font-semibold text-blue-600 group-hover:text-blue-500">
+                  講義を{user?.profile?.role === "Student" ? "登録" : "作成"}
+                </span>
+              </div>
+            </button>
+            <div className="-mt-6 flex items-end justify-between pb-4">
+              <span className="text-sm font-semibold">
+                {user?.profile?.role === "Student" ? "学生" : "教員"}
+                でログイン中
+              </span>
               <button
-                onClick={onClickHandler}
                 type="button"
-                className="flex w-full justify-center gap-8"
+                className="px-2 text-gray-400 hover:text-gray-900"
+                aria-label="ログアウト"
+                onClick={signOut}
               >
-                <PlusIcon className="h-6 w-6 text-gray-400 group-hover:text-gray-500" />
-                <span className="border-b px-2">登録</span>
+                <ArrowLeftOnRectangleIcon
+                  className="h-6 w-6 "
+                  aria-hidden="true"
+                />
               </button>
             </div>
           </div>
@@ -139,7 +157,7 @@ export function NavInTransition() {
                 </div>
               </Transition.Child>
               {/* Sidebar component, swap this element with another sidebar if you like */}
-              <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2">
+              <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6">
                 <Link href="/" className="flex shrink-0 items-center">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img className="w-24" src="/logo.png" alt="SiLec" />
@@ -161,16 +179,36 @@ export function NavInTransition() {
                         <Courses />
                       </Suspense>
                     </li>
-                    <li className="-mx-6 mt-auto border-t pt-4">
+                    <button
+                      onClick={onClickHandler}
+                      type="button"
+                      className="sticky bottom-0 -mx-6 mt-auto border-t bg-white px-4 py-4"
+                    >
+                      <div className="relative flex w-full justify-center">
+                        <DocumentPlusIcon className="absolute left-0 h-6 w-6 text-blue-600 group-hover:text-gray-900" />
+                        <span className="px-2 font-semibold text-blue-600">
+                          講義を
+                          {user?.profile?.role === "Student" ? "登録" : "作成"}
+                        </span>
+                      </div>
+                    </button>
+                    <div className="-mt-6 flex items-end justify-between pb-4">
+                      <span className="text-sm font-semibold">
+                        {user?.profile?.role === "Student" ? "学生" : "教員"}
+                        でログイン中
+                      </span>
                       <button
-                        onClick={onClickHandler}
                         type="button"
-                        className="flex w-full justify-center gap-8"
+                        className="px-2 text-gray-400 hover:text-gray-900"
+                        aria-label="ログアウト"
+                        onClick={signOut}
                       >
-                        <PlusIcon className="h-6 w-6 text-gray-400 group-hover:text-gray-500" />
-                        <span className="border-b px-2">登録</span>
+                        <ArrowLeftOnRectangleIcon
+                          className="h-6 w-6 "
+                          aria-hidden="true"
+                        />
                       </button>
-                    </li>
+                    </div>
                   </ul>
                 </nav>
               </div>

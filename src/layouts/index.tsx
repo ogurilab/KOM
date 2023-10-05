@@ -68,7 +68,7 @@ function Layout({ children, title, side }: Props) {
           {side}
         </div>
 
-        <main className="lg:pl-72">
+        <main className="h-full lg:pl-72">
           <div>
             <div className="px-4 py-10 sm:px-6 lg:px-8 lg:py-6">{children}</div>
           </div>
