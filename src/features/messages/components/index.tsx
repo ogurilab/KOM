@@ -43,7 +43,7 @@ const MemoMessage = memo(({ message }: { message: TMessage }) => {
   });
 
   return (
-    <div className="flex gap-x-2">
+    <div className=" flex gap-x-2">
       {role === "Teacher" && (
         <Image
           src="/teacher.png"
@@ -139,7 +139,7 @@ export function Messages() {
   const hasMessages = messages?.length > 0;
 
   return (
-    <div className=" grid flex-1 gap-y-6">
+    <div className="grid flex-1 gap-y-6">
       {isPlaceholderData && hasMessages && (
         <div
           aria-hidden="true"
