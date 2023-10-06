@@ -2,13 +2,21 @@ import { Switch as TSwitch } from "@headlessui/react";
 import clsx from "clsx";
 import React from "react";
 
-type Props = {
+type SwitchProps = {
   enabled: boolean;
-  setEnabled: (e: boolean) => void;
+  setEnabled: (enabled: boolean) => void;
   label?: string;
-};
+} & Omit<
+  React.ComponentPropsWithoutRef<typeof TSwitch>,
+  "onChange" | "checked"
+>;
 
-export function ShortSwitch({ enabled, setEnabled, label }: Props) {
+export function ShortSwitch({
+  enabled,
+  setEnabled,
+  label,
+  ...props
+}: SwitchProps) {
   return (
     <TSwitch.Group as="div" className="flex items-center gap-x-3">
       {label && (
@@ -23,6 +31,7 @@ export function ShortSwitch({ enabled, setEnabled, label }: Props) {
         checked={enabled}
         onChange={setEnabled}
         className="group relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+        {...props}
       >
         <span className="sr-only">{label}</span>
         <span
@@ -48,7 +57,7 @@ export function ShortSwitch({ enabled, setEnabled, label }: Props) {
   );
 }
 
-export function Switch({ enabled, setEnabled, label }: Props) {
+export function Switch({ enabled, setEnabled, label, ...props }: SwitchProps) {
   return (
     <TSwitch.Group as="div" className="flex items-center gap-x-3">
       <TSwitch
@@ -58,6 +67,7 @@ export function Switch({ enabled, setEnabled, label }: Props) {
           enabled ? "bg-blue-600" : "bg-gray-200",
           "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
         )}
+        {...props}
       >
         <span
           aria-hidden="true"

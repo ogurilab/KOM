@@ -125,7 +125,7 @@ function AnswerModalContent({
           <ShortSwitch
             enabled={isOnlyTeacher}
             setEnabled={setIsOnlyTeacher}
-            label="先生のみ表示"
+            label="先生の回答のみ表示"
           />
         </div>
         <div className="grid max-h-48 gap-y-4 overflow-y-auto py-2">

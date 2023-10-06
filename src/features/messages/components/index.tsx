@@ -121,7 +121,8 @@ const MemoMessage = memo(({ message }: { message: TMessage }) => {
 });
 
 export function Messages() {
-  const { messages, ref, isFetchingNextPage, isPending } = useMessages();
+  const { messages, ref, isFetchingNextPage, isPending, isPlaceholderData } =
+    useMessages();
   useMessageSubscriptions();
 
   if (isPending) {
@@ -138,7 +139,13 @@ export function Messages() {
   const hasMessages = messages?.length > 0;
 
   return (
-    <div className="grid flex-1 gap-y-6">
+    <div className=" grid flex-1 gap-y-6">
+      {isPlaceholderData && (
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 isolate z-10 animate-pulse rounded-lg bg-white/60"
+        />
+      )}
       {hasMessages ? (
         messages?.map((message, index) => {
           const targetDate = new Date(message?.created_at || "");

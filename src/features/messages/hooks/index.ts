@@ -52,8 +52,14 @@ export function useMessage({
 export function useMessages() {
   const { query } = useRouter();
   const isQAndA = useAtomValue(qAndAAtom);
-  const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useQueryMessages(query.slug as string, isQAndA);
+  const {
+    data,
+    isPending,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isPlaceholderData,
+  } = useQueryMessages(query.slug as string, isQAndA);
 
   const { ref } = useInView({
     onChange: (inView) => {
@@ -84,5 +90,6 @@ export function useMessages() {
     messages,
     isPending,
     ref,
+    isPlaceholderData,
   };
 }
