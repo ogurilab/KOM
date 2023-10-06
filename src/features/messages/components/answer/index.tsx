@@ -60,11 +60,11 @@ function Answer({
   role: TMessage["role"];
 }) {
   return (
-    <div key={id} className="flex ">
-      <p className="flex flex-1 items-start  font-medium text-gray-900">
+    <div key={id} className="flex gap-x-2">
+      <p className="flex flex-1 items-start font-medium text-gray-900">
         <span
           className={clsx(
-            "mr-1 inline-flex max-w-max items-center rounded-md  px-2 py-1 text-xs font-medium  ring-1 ring-inset ring-red-700/10",
+            "mr-1.5 inline-flex max-w-max items-center rounded-md  px-2 py-1 text-xs font-medium  ring-1 ring-inset ring-red-700/10",
             role === "Teacher"
               ? "bg-purple-50 text-purple-700"
               : "bg-blue-50 text-blue-600"
@@ -76,7 +76,7 @@ function Answer({
       </p>
       <time
         dateTime={new Date(created_at).toISOString()}
-        className="ml-auto text-xs leading-6 text-gray-600"
+        className="ml-auto self-end text-xs leading-6 text-gray-600"
       >
         {new Date(created_at).toLocaleDateString("ja-JP", {
           month: "long",

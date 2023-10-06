@@ -86,7 +86,7 @@ export function useQueryMessages(slug: string, only_q_and_a: boolean) {
     placeholderData: (data) => data,
     initialPageParam: new Date().toISOString(),
     enabled: !!user && !!slug,
-    gcTime: 0,
+    staleTime: 0,
   });
 }
 
