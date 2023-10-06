@@ -140,7 +140,7 @@ export function Messages() {
 
   return (
     <div className=" grid flex-1 gap-y-6">
-      {isPlaceholderData && (
+      {isPlaceholderData && hasMessages && (
         <div
           aria-hidden="true"
           className="absolute inset-0 isolate z-10 animate-pulse rounded-lg bg-white/60"
