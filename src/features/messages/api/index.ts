@@ -12,7 +12,6 @@ type GetMessages = {
   slug: string;
   created_at: string;
   only_q_and_a: boolean;
-  role: "Teacher" | "Student";
 };
 
 type InfiniteMessages = {
@@ -34,12 +33,7 @@ async function getQuestion({ question_id }: { question_id: number | null }) {
   return data;
 }
 
-async function getMessages({
-  slug,
-  created_at,
-  only_q_and_a,
-  role,
-}: GetMessages) {
+async function getMessages({ slug, created_at, only_q_and_a }: GetMessages) {
   const AllCategories = [
     Categories.Question,
     Categories.Others,
@@ -49,10 +43,11 @@ async function getMessages({
     Categories.Answer,
   ];
 
-  const filteredCategories =
-    role === "Teacher"
-      ? [Categories.Question, Categories.Request, Categories.Answer]
-      : [Categories.Answer];
+  const filteredCategories = [
+    Categories.Question,
+    Categories.Request,
+    Categories.Answer,
+  ];
 
   const { data } = await supabase
     .from("messages")
@@ -76,7 +71,6 @@ export function useQueryMessages(slug: string, only_q_and_a: boolean) {
         slug,
         created_at: pageParam,
         only_q_and_a,
-        role: user?.profile?.role ?? "Teacher",
       }),
 
     getNextPageParam: (lastPage) => {
@@ -136,7 +130,7 @@ async function getAnswer({ id }: { id: number | null }) {
 
   const { data, error } = await supabase
     .from("messages")
-    .select("id,content,type,created_at")
+    .select("id,content,type,created_at,role")
     .eq("question_id", id)
     .order("created_at", { ascending: false });
 
@@ -149,10 +143,12 @@ export function useQueryAnswer({
   id,
   open,
   course_id,
+  is_only_teacher,
 }: {
   id: number;
   open: boolean;
   course_id: string;
+  is_only_teacher: boolean;
 }) {
   const queryClient = useQueryClient();
   const isQAndA = useAtomValue(qAndAAtom);
@@ -176,7 +172,16 @@ export function useQueryAnswer({
         content: answer.content ?? "",
         type: answer.type,
         created_at: answer.created_at,
+        role: answer.role,
       }));
+    },
+    select: (data) => {
+      if (!data) return undefined;
+
+      return data.filter((answer) => {
+        if (is_only_teacher) return answer.role === "Teacher";
+        return true;
+      });
     },
     staleTime: 1000 * 60 * 30,
   });

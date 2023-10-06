@@ -18,13 +18,7 @@ export function Course() {
     <Layout
       title={name}
       side={
-        <Switch
-          enabled={isOpen}
-          setEnabled={setIsOpen}
-          label={
-            user?.profile?.role === "Teacher" ? "Q&Aのみ表示" : "回答のみ表示"
-          }
-        />
+        <Switch enabled={isOpen} setEnabled={setIsOpen} label="Q&Aのみ表示" />
       }
     >
       <Title title={name} />
