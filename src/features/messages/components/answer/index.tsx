@@ -1,7 +1,9 @@
-import React, { Suspense } from "react";
+import clsx from "clsx";
+import React, { Suspense, useState } from "react";
 import { CategoryBadge } from "@/components/categoryBadge";
 import { Loader } from "@/components/loader";
 import { Modal } from "@/components/modal";
+import { ShortSwitch } from "@/components/switch";
 import { useQueryAnswer } from "@/features/messages/api";
 import { Message as TMessage } from "@/schema/db";
 
@@ -50,26 +52,31 @@ function Answer({
   content,
   created_at,
   id,
-  i,
+  role,
 }: {
   content: TMessage["content"];
   created_at: TMessage["created_at"];
   id: TMessage["id"];
-  i: number;
+  role: TMessage["role"];
 }) {
   return (
-    <div key={id} className="flex flex-col">
-      <p className="flex-1 font-medium leading-7 text-gray-900">
-        {i === 0 && (
-          <span className="mr-1 inline-flex max-w-max items-center rounded-md bg-pink-50 px-2 py-1 text-xs font-medium text-pink-700 ring-1 ring-inset ring-red-700/10">
-            最新
-          </span>
-        )}
-        {content}
+    <div key={id} className="flex ">
+      <p className="flex flex-1 items-start  font-medium text-gray-900">
+        <span
+          className={clsx(
+            "mr-1 inline-flex max-w-max items-center rounded-md  px-2 py-1 text-xs font-medium  ring-1 ring-inset ring-red-700/10",
+            role === "Teacher"
+              ? "bg-purple-50 text-purple-700"
+              : "bg-blue-50 text-blue-600"
+          )}
+        >
+          {role === "Teacher" ? "先生" : "生徒"}
+        </span>
+        <span className="flex-1 leading-6">{content}</span>
       </p>
       <time
         dateTime={new Date(created_at).toISOString()}
-        className="ml-auto text-xs text-gray-600"
+        className="ml-auto text-xs leading-6 text-gray-600"
       >
         {new Date(created_at).toLocaleDateString("ja-JP", {
           month: "long",
@@ -90,7 +97,13 @@ function AnswerModalContent({
   type,
   course_id,
 }: Props) {
-  const { data, isPending } = useQueryAnswer({ id, open, course_id });
+  const [isOnlyTeacher, setIsOnlyTeacher] = useState(false);
+  const { data, isPending } = useQueryAnswer({
+    id,
+    open,
+    course_id,
+    is_only_teacher: isOnlyTeacher,
+  });
 
   if (isPending) {
     return (
@@ -107,11 +120,18 @@ function AnswerModalContent({
         </p>
       </Modal.Title>
       <Modal.Description as="div" className="my-4">
-        <p className="mb-2 font-semibold text-blue-600">回答一覧</p>
-        <div className="grid max-h-48 gap-y-6 overflow-y-auto">
-          {data?.map((answer, i) => (
+        <div className="mb-3 flex justify-between">
+          <span className="font-semibold text-blue-600">回答一覧</span>
+          <ShortSwitch
+            enabled={isOnlyTeacher}
+            setEnabled={setIsOnlyTeacher}
+            label="先生の回答のみ表示"
+          />
+        </div>
+        <div className="grid max-h-48 gap-y-4 overflow-y-auto py-2">
+          {data?.map((answer) => (
             <Answer
-              i={i}
+              role={answer?.role}
               key={answer?.id}
               content={answer?.content}
               created_at={answer?.created_at}
