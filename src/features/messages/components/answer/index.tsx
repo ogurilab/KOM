@@ -1,9 +1,7 @@
-import clsx from "clsx";
-import React, { Suspense, useState } from "react";
+import React, { Suspense } from "react";
 import { CategoryBadge } from "@/components/categoryBadge";
 import { Loader } from "@/components/loader";
 import { Modal } from "@/components/modal";
-import { ShortSwitch } from "@/components/switch";
 import { useQueryAnswer } from "@/features/messages/api";
 import { Message as TMessage } from "@/schema/db";
 
@@ -52,26 +50,22 @@ function Answer({
   content,
   created_at,
   id,
-  role,
+  i,
 }: {
   content: TMessage["content"];
   created_at: TMessage["created_at"];
   id: TMessage["id"];
-  role: TMessage["role"];
+  i: number;
 }) {
   return (
     <div key={id} className="flex gap-x-2">
       <p className="flex flex-1 items-start font-medium text-gray-900">
-        <span
-          className={clsx(
-            "mr-1.5 inline-flex max-w-max items-center rounded-md  px-2 py-1 text-xs font-medium  ring-1 ring-inset ring-red-700/10",
-            role === "Teacher"
-              ? "bg-purple-50 text-purple-700"
-              : "bg-blue-50 text-blue-600"
-          )}
-        >
-          {role === "Teacher" ? "先生" : "生徒"}
-        </span>
+        {i === 0 && (
+          <span className="mr-1.5 inline-flex max-w-max items-center rounded-md  bg-red-50 px-2 py-1 text-xs  font-medium text-red-700 ring-1 ring-inset ring-red-700/10">
+            最新
+          </span>
+        )}
+
         <span className="flex-1 leading-6">{content}</span>
       </p>
       <time
@@ -97,12 +91,10 @@ function AnswerModalContent({
   type,
   course_id,
 }: Props) {
-  const [isOnlyTeacher, setIsOnlyTeacher] = useState(false);
   const { data, isPending } = useQueryAnswer({
     id,
     open,
     course_id,
-    is_only_teacher: isOnlyTeacher,
   });
 
   if (isPending) {
@@ -122,16 +114,11 @@ function AnswerModalContent({
       <Modal.Description as="div" className="my-4">
         <div className="mb-3 flex justify-between">
           <span className="font-semibold text-blue-600">回答一覧</span>
-          <ShortSwitch
-            enabled={isOnlyTeacher}
-            setEnabled={setIsOnlyTeacher}
-            label="先生の回答のみ表示"
-          />
         </div>
         <div className="grid max-h-48 gap-y-4 overflow-y-auto py-2">
-          {data?.map((answer) => (
+          {data?.map((answer, i) => (
             <Answer
-              role={answer?.role}
+              i={i}
               key={answer?.id}
               content={answer?.content}
               created_at={answer?.created_at}

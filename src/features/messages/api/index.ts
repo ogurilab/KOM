@@ -143,12 +143,10 @@ export function useQueryAnswer({
   id,
   open,
   course_id,
-  is_only_teacher,
 }: {
   id: number;
   open: boolean;
   course_id: string;
-  is_only_teacher: boolean;
 }) {
   const queryClient = useQueryClient();
   const isQAndA = useAtomValue(qAndAAtom);
@@ -175,14 +173,7 @@ export function useQueryAnswer({
         role: answer.role,
       }));
     },
-    select: (data) => {
-      if (!data) return undefined;
 
-      return data.filter((answer) => {
-        if (is_only_teacher) return answer.role === "Teacher";
-        return true;
-      });
-    },
     staleTime: 1000 * 60 * 30,
   });
 }

@@ -7,6 +7,7 @@ import {
   qAndAAtom,
   questionAtom,
   selectedCategoryAtom,
+  userAtom,
 } from "@/context";
 import { useQueryMessages } from "@/features/messages/api";
 import { Message as TMessage } from "@/schema/db";
@@ -27,6 +28,7 @@ export function useMessage({
   const messageInputRef = useAtomValue(messageInputRefAtom);
   const setQuestionId = useSetAtom(questionAtom);
   const setCategory = useSetAtom(selectedCategoryAtom);
+  const user = useAtomValue(userAtom);
 
   const [answerModalIsOpen, setAnswerModalIsOpen] = useState(false);
 
@@ -37,7 +39,9 @@ export function useMessage({
   };
 
   const canAnswer =
-    role === "Student" && (type === "Question" || type === "Request");
+    user?.profile?.role === "Teacher" &&
+    role === "Student" &&
+    (type === "Question" || type === "Request");
 
   return {
     canAnswer,

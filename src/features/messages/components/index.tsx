@@ -85,21 +85,20 @@ const MemoMessage = memo(({ message }: { message: TMessage }) => {
           )}
         </div>
         {/* eslint-disable-next-line no-nested-ternary */}
-        {canAnswer && (
+        {canAnswer ? (
           <button
             type="button"
             onClick={onClickHandler}
-            className="text-xs font-semibold text-purple-600 hover:text-purple-500"
+            className="text-xs font-semibold text-blue-600 hover:text-blue-500"
           >
             {has_response ? "再度回答" : "回答する"}
           </button>
-        )}
-        {has_response && (
+        ) : has_response ? (
           <>
             <button
               onClick={() => setAnswerModalIsOpen(true)}
               type="button"
-              className="mt-1 text-xs font-semibold text-blue-600 hover:text-blue-500"
+              className="text-xs font-semibold text-blue-600 hover:text-blue-500"
             >
               回答を見る
             </button>
@@ -114,7 +113,7 @@ const MemoMessage = memo(({ message }: { message: TMessage }) => {
               onClose={() => setAnswerModalIsOpen(false)}
             />
           </>
-        )}
+        ) : null}
       </div>
     </div>
   );
