@@ -152,6 +152,7 @@ export function MessageForm() {
           <div className="mb-4 flex  w-full justify-between px-2.5">
             {!isAuthLoading &&
               Object.values(Categories).map((category) => {
+                if (category === "Answer" && role === "Student") return null;
                 if (
                   role === "Teacher" &&
                   (category === "Request" || category === "Question")
