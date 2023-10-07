@@ -149,20 +149,26 @@ export function AnswerModal({
 }: Props) {
   return (
     <Modal open={open} onClose={onClose}>
-      <Suspense
-        fallback={
-          <AnswerModalLoader onClose={onClose} type={type} content={content} />
-        }
-      >
-        <AnswerModalContent
-          course_id={course_id}
-          type={type}
-          content={content}
-          id={id}
-          open={open}
-          onClose={onClose}
-        />
-      </Suspense>
+      {open && (
+        <Suspense
+          fallback={
+            <AnswerModalLoader
+              onClose={onClose}
+              type={type}
+              content={content}
+            />
+          }
+        >
+          <AnswerModalContent
+            course_id={course_id}
+            type={type}
+            content={content}
+            id={id}
+            open={open}
+            onClose={onClose}
+          />
+        </Suspense>
+      )}
     </Modal>
   );
 }

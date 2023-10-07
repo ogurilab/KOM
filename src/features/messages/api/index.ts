@@ -12,6 +12,8 @@ type GetMessages = {
   slug: string;
   created_at: string;
   only_q_and_a: boolean;
+
+  role: "Teacher" | "Student";
 };
 
 type InfiniteMessages = {
@@ -24,7 +26,7 @@ async function getQuestion({ question_id }: { question_id: number | null }) {
 
   const { data, error } = await supabase
     .from("messages")
-    .select("id,content,type,file_path")
+    .select("id,content,type,file_path,has_response")
     .eq("id", question_id)
     .single();
 
@@ -33,7 +35,12 @@ async function getQuestion({ question_id }: { question_id: number | null }) {
   return data;
 }
 
-async function getMessages({ slug, created_at, only_q_and_a }: GetMessages) {
+async function getMessages({
+  slug,
+  created_at,
+  only_q_and_a,
+  role,
+}: GetMessages) {
   const AllCategories = [
     Categories.Question,
     Categories.Others,
@@ -43,11 +50,10 @@ async function getMessages({ slug, created_at, only_q_and_a }: GetMessages) {
     Categories.Answer,
   ];
 
-  const filteredCategories = [
-    Categories.Question,
-    Categories.Request,
-    Categories.Answer,
-  ];
+  const filteredCategories =
+    role === "Teacher"
+      ? [Categories.Question, Categories.Request, Categories.Answer]
+      : [Categories.Answer];
 
   const { data } = await supabase
     .from("messages")
@@ -71,6 +77,7 @@ export function useQueryMessages(slug: string, only_q_and_a: boolean) {
         slug,
         created_at: pageParam,
         only_q_and_a,
+        role: user?.profile?.role ?? "Teacher",
       }),
 
     getNextPageParam: (lastPage) => {
@@ -118,6 +125,7 @@ export function useQueryQuestion({
         content: question.content ?? "",
         type: question.type,
         file_path: question.file_path,
+        has_response: question.has_response,
       };
     },
     enabled,
